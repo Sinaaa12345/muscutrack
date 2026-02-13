@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head><title>Generate Icons</title></head>
+<body>
+<p>Right-click each image below and "Save image as..." to save the icons.</p>
+<h3>icon-192.png</h3>
+<canvas id="c192" width="192" height="192"></canvas>
+<h3>icon-512.png</h3>
+<canvas id="c512" width="512" height="512"></canvas>
+<script>
+function drawIcon(canvas) {
+    const ctx = canvas.getContext('2d');
+    const s = canvas.width;
+
+    // Background
+    ctx.fillStyle = '#0f0f1a';
+    ctx.beginPath();
+    ctx.roundRect(0, 0, s, s, s * 0.15);
+    ctx.fill();
+
+    // Dumbbell icon
+    const cx = s / 2;
+    const cy = s / 2;
+    const barW = s * 0.45;
+    const barH = s * 0.06;
+    const plateW = s * 0.08;
+    const plateH = s * 0.28;
+    const outerPlateH = s * 0.2;
+
+    // Bar
+    ctx.fillStyle = '#8b8b9e';
+    ctx.beginPath();
+    ctx.roundRect(cx - barW/2, cy - barH/2, barW, barH, barH/2);
+    ctx.fill();
+
+    // Left plates
+    ctx.fillStyle = '#e94560';
+    ctx.beginPath();
+    ctx.roundRect(cx - barW/2 + s*0.02, cy - plateH/2, plateW, plateH, 4);
+    ctx.fill();
+    ctx.fillStyle = '#c23152';
+    ctx.beginPath();
+    ctx.roundRect(cx - barW/2 - s*0.04, cy - outerPlateH/2, plateW * 0.7, outerPlateH, 3);
+    ctx.fill();
+
+    // Right plates
+    ctx.fillStyle = '#e94560';
+    ctx.beginPath();
+    ctx.roundRect(cx + barW/2 - s*0.02 - plateW, cy - plateH/2, plateW, plateH, 4);
+    ctx.fill();
+    ctx.fillStyle = '#c23152';
+    ctx.beginPath();
+    ctx.roundRect(cx + barW/2 + s*0.04 - plateW * 0.7, cy - outerPlateH/2, plateW * 0.7, outerPlateH, 3);
+    ctx.fill();
+
+    // Text
+    ctx.fillStyle = '#ffffff';
+    ctx.font = `bold ${s * 0.1}px -apple-system, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.fillText('MT', cx, cy + s * 0.3);
+}
+
+drawIcon(document.getElementById('c192'));
+drawIcon(document.getElementById('c512'));
+
+// Auto-download
+['c192', 'c512'].forEach(id => {
+    const canvas = document.getElementById(id);
+    const link = document.createElement('a');
+    link.download = id === 'c192' ? 'icon-192.png' : 'icon-512.png';
+    link.href = canvas.toDataURL('image/png');
+    // Uncomment to auto-download: link.click();
+});
+</script>
+</body>
+</html>

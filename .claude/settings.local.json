@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node --version:*)",
+      "Bash(timeout:*)",
+      "Bash(curl:*)",
+      "Bash(node -c:*)",
+      "Bash(node -e \"try { require\\(''fs''\\).readFileSync\\(''c:/Users/Basile/Documents/trackingmuscu/app.js'', ''utf8''\\); new Function\\(require\\(''fs''\\).readFileSync\\(''c:/Users/Basile/Documents/trackingmuscu/app.js'', ''utf8''\\)\\); console.log\\(''Syntax OK''\\); } catch\\(e\\) { console.error\\(e.message\\); }\")",
+      "Bash(node -e \"new Function\\(require\\(''fs''\\).readFileSync\\(''c:/Users/Basile/Documents/trackingmuscu/app.js'', ''utf8''\\)\\); console.log\\(''JS Syntax OK''\\)\")",
+      "Bash(node -e:*)",
+      "Bash(powershell -Command \"Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force; Start-Sleep 1; Start-Process -FilePath ''node'' -ArgumentList ''server.js'' -WorkingDirectory \\(Get-Location\\) -WindowStyle Hidden; Start-Sleep 2; Invoke-RestMethod -Uri ''http://localhost:3000/api/auth/init'' -Method POST -ContentType ''application/json'' -Body ''{\"\"userId\"\":\"\"MAX\"\"}''\")",
+      "Bash(powershell -Command \"Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force; Start-Sleep 1; Start-Process -FilePath ''node'' -ArgumentList ''server.js'' -WorkingDirectory ''c:\\\\Users\\\\Basile\\\\Documents\\\\trackingmuscu'' -WindowStyle Hidden; Start-Sleep 2; Invoke-RestMethod -Uri ''http://localhost:3000/api/auth/init'' -Method POST -ContentType ''application/json'' -Body ''{\"\"userId\"\":\"\"BASILE\"\"}''\")",
+      "Bash(powershell -Command:*)"
+    ]
+  }
+}

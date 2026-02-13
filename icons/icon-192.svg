@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <rect width="192" height="192" rx="28" fill="#0f0f1a"/>
+  <!-- Bar -->
+  <rect x="36" y="90" width="120" height="12" rx="6" fill="#8b8b9e"/>
+  <!-- Left outer plate -->
+  <rect x="28" y="72" width="12" height="48" rx="3" fill="#c23152"/>
+  <!-- Left inner plate -->
+  <rect x="44" y="62" width="16" height="68" rx="4" fill="#e94560"/>
+  <!-- Right inner plate -->
+  <rect x="132" y="62" width="16" height="68" rx="4" fill="#e94560"/>
+  <!-- Right outer plate -->
+  <rect x="152" y="72" width="12" height="48" rx="3" fill="#c23152"/>
+  <!-- Text -->
+  <text x="96" y="158" text-anchor="middle" fill="white" font-family="-apple-system, sans-serif" font-size="22" font-weight="bold">MUSCUTRACK</text>
+</svg>
