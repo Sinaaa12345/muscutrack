@@ -323,12 +323,6 @@ app.get('/health', (req, res) => {
     });
 });
 
-// =============================================================
-// FALLBACK - Serve index.html for SPA
-// =============================================================
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
 
 // =============================================================
 // START SERVER
@@ -338,9 +332,6 @@ app.get('*', (req, res) => {
     //console.log(`Redis: ${redisConnected ? 'connected' : 'disconnected (localStorage fallback)'}`);
 //});
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`MuscuTrack server running on port ${PORT}`);
-});
 
 // =============================================================
 // =============================================================
