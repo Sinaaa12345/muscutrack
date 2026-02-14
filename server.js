@@ -339,38 +339,81 @@ app.listen(PORT, () => {
 });
 
 // =============================================================
+// =============================================================
 // START SERVER
 // =============================================================
-//const server = app.listen(PORT, '0.0.0.0', () => {
-    //console.log(`MuscuTrack server running on http://localhost:${PORT}`);
-    //console.log(`Redis: ${redisConnected ? 'connected' : 'disconnected (localStorage fallback)'}`);
-//});
+const server = app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 MuscuTrack server running on http://0.0.0.0:${PORT}`);
+    console.log(`🔗 Redis: ${redisConnected ? 'connected' : 'disconnected (localStorage fallback)'}`);
+});
+
+// Keep-alive pour empêcher le container de s'arrêter
+server.keepAliveTimeout = 65000;
+server.headersTimeout = 66000;
 
 // =============================================================
 // GRACEFUL SHUTDOWN
 // =============================================================
+let isShuttingDown = false;
+
 process.on('SIGTERM', async () => {
-    console.log('SIGTERM signal received: closing HTTP server');
+    if (isShuttingDown) return;
+    isShuttingDown = true;
+    
+    console.log('⚠️  SIGTERM signal received: closing HTTP server');
+    
     server.close(async () => {
-        console.log('HTTP server closed');
+        console.log('✅ HTTP server closed');
+        
         if (redisConnected) {
-            await redis.quit();
-            console.log('Redis connection closed');
+            try {
+                await redis.quit();
+                console.log('✅ Redis connection closed');
+            } catch (err) {
+                console.error('Error closing Redis:', err);
+            }
         }
+        
         process.exit(0);
     });
+    
+    // Force exit after 10s
+    setTimeout(() => {
+        console.error('⚠️  Forced shutdown after timeout');
+        process.exit(1);
+    }, 10000);
 });
 
 process.on('SIGINT', async () => {
-    console.log('SIGINT signal received: closing HTTP server');
+    if (isShuttingDown) return;
+    isShuttingDown = true;
+    
+    console.log('⚠️  SIGINT signal received: closing HTTP server');
+    
     server.close(async () => {
-        console.log('HTTP server closed');
+        console.log('✅ HTTP server closed');
+        
         if (redisConnected) {
-            await redis.quit();
-            console.log('Redis connection closed');
+            try {
+                await redis.quit();
+                console.log('✅ Redis connection closed');
+            } catch (err) {
+                console.error('Error closing Redis:', err);
+            }
         }
+        
         process.exit(0);
     });
 });
 
+// Handle uncaught errors
+process.on('uncaughtException', (err) => {
+    console.error('💥 Uncaught Exception:', err);
+    process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('💥 Unhandled Rejection at:', promise, 'reason:', reason);
+    process.exit(1);
+});
 
