@@ -23,7 +23,7 @@ const translations = {
         // Auth
         trackingSubtitle: 'Suivi de musculation',
         enterUsername: 'Entrez votre nom d\'utilisateur :',
-        usernamePlaceholder: 'Ex: BASILE',
+        usernamePlaceholder: 'Entrez votre ID',
         login: 'Connexion',
         loginSuccess: 'Connexion réussie',
         loginError: 'Erreur de connexion',
@@ -515,14 +515,14 @@ const App = {
             try {
                 await initAuth(id);
                 await syncFromServer();
-                showToast(t('loginSuccess'));
-                this.onAuthSuccess();
-            } catch (err) {
-                const errorEl = document.getElementById('auth-error');
-                errorEl.textContent = err.message || t('loginError');
-                errorEl.style.display = 'block';
-                btn.disabled = false;
+            } catch {
+                // Server unavailable or user not found - continue in offline/localStorage mode
+                currentUserId = id;
+                localStorage.setItem('mt_user_id', id);
+                isOnline = false;
             }
+            showToast(t('loginSuccess'));
+            this.onAuthSuccess();
         });
 
         document.getElementById('auth-id-input').addEventListener('keydown', (e) => {
