@@ -333,9 +333,13 @@ app.get('*', (req, res) => {
 // =============================================================
 // START SERVER
 // =============================================================
-app.listen(PORT, () => {
-    console.log(`MuscuTrack server running on http://localhost:${PORT}`);
-    console.log(`Redis: ${redisConnected ? 'connected' : 'disconnected (localStorage fallback)'}`);
+//(PORT, () => {
+    //console.log(`MuscuTrack server running on http://localhost:${PORT}`);
+    //console.log(`Redis: ${redisConnected ? 'connected' : 'disconnected (localStorage fallback)'}`);
+//});
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`MuscuTrack server running on port ${PORT}`);
 });
 
 // =============================================================
