@@ -3,20 +3,226 @@
    ============================================================= */
 
 // =============================================================
+// INTERNATIONALIZATION (i18n)
+// =============================================================
+const translations = {
+    fr: {
+        // Muscle groups
+        muscles: ['Pectoraux', 'Dos', 'Épaules', 'Biceps', 'Triceps', 'Quadriceps', 'Ischio-jambiers', 'Fessiers', 'Mollets', 'Abdominaux'],
+        // General
+        appName: 'MuscuTrack',
+        loading: 'Chargement...',
+        close: 'Fermer',
+        change: 'Changer',
+        cancel: 'Annuler',
+        confirm: 'Confirmer',
+        save: 'Enregistrer',
+        delete: 'Supprimer',
+        start: 'Démarrer',
+        language: 'Langue',
+        // Auth
+        trackingSubtitle: 'Suivi de musculation',
+        enterUsername: 'Entrez votre nom d\'utilisateur :',
+        usernamePlaceholder: 'Ex: BASILE',
+        login: 'Connexion',
+        loginSuccess: 'Connexion réussie',
+        loginError: 'Erreur de connexion',
+        // User info
+        user: 'Utilisateur',
+        yourId: 'Votre ID :',
+        noteId: 'Notez cet ID pour vous reconnecter depuis un autre appareil.',
+        online: 'En ligne',
+        offline: 'Hors-ligne',
+        // Navigation
+        programs: 'Programmes',
+        history: 'Historique',
+        session: 'Séance',
+        edit: 'Modifier',
+        newProgram: 'Nouveau programme',
+        progression: 'Progression',
+        // Home
+        noProgram: 'Aucun programme',
+        createFirstProgram: 'Créez votre premier programme d\'entraînement pour commencer le suivi.',
+        createProgram: 'Créer un programme',
+        newProgramBtn: '+ Nouveau programme',
+        exerciseCount: (n) => `${n} exercice${n > 1 ? 's' : ''}`,
+        lastSession: 'Dernière séance :',
+        sessionCount: (n) => `${n} séance${n > 1 ? 's' : ''}`,
+        // Workout editor
+        programName: 'Nom du programme',
+        programNamePlaceholder: 'Ex: Push, Pull, Legs...',
+        exercises: 'Exercices',
+        noExerciseAdded: 'Aucun exercice ajouté',
+        addExercise: 'Ajouter un exercice',
+        exerciseName: 'Nom de l\'exercice',
+        muscleGroup: 'Groupe musculaire',
+        addBtn: '+ Ajouter',
+        createProgramBtn: 'Créer le programme',
+        weight: 'Charge',
+        kg: 'kg',
+        sets: 'Séries',
+        // Workout editor toasts
+        enterExerciseName: 'Entrez un nom d\'exercice',
+        selectMuscleGroup: 'Sélectionnez un groupe musculaire',
+        enterProgramName: 'Entrez un nom pour le programme',
+        addAtLeastOneExercise: 'Ajoutez au moins un exercice',
+        maxProgramsReached: 'Maximum 3 programmes atteint',
+        programModified: 'Programme modifié',
+        programCreated: 'Programme créé',
+        // Delete program
+        deleteProgram: 'Supprimer le programme',
+        deleteProgramConfirm: (name) => `Supprimer "${name}" et toutes ses séances ?`,
+        programDeleted: 'Programme supprimé',
+        // Session
+        addSet: '+ Ajouter une série',
+        setsProgress: (done, total) => `${done}/${total} séries`,
+        cancelSession: 'Annuler la séance',
+        cancelSessionConfirm: 'Voulez-vous vraiment annuler cette séance ? Les données ne seront pas sauvegardées.',
+        finishSession: 'Terminer la séance',
+        validateAtLeastOneSet: 'Validez au moins une série',
+        sessionSaved: 'Séance enregistrée !',
+        reps: 'reps',
+        // History
+        noHistory: 'Aucun historique',
+        createAndDoSession: 'Créez un programme et effectuez une séance pour voir l\'historique ici.',
+        noSession: 'Aucune séance',
+        doSessionForHistory: 'Effectuez une séance pour voir l\'historique.',
+        deleteSession: 'Supprimer la séance',
+        deleteSessionConfirm: 'Voulez-vous vraiment supprimer cette séance ?',
+        sessionDeleted: 'Séance supprimée',
+        viewProgression: 'Voir la progression',
+        seriesCount: (n) => `${n} série${n > 1 ? 's' : ''}`,
+        // Progression
+        notEnoughData: 'Pas assez de données',
+        doAtLeast2Sessions: 'Effectuez au moins 2 séances pour voir la progression.',
+        notEnoughDataForProgression: 'Pas assez de données pour afficher la progression.',
+        // Comparison
+        prev: 'Préc.',
+        current: 'Actuel',
+        vsPreviousSession: (date) => `vs séance précédente (${date})`,
+        setsShort: 'ser.',
+        // Errors
+        networkError: 'Erreur réseau',
+        // Date locale
+        dateLocale: 'fr-FR',
+    },
+    zh: {
+        // Muscle groups
+        muscles: ['胸肌', '背部', '肩膀', '二头肌', '三头肌', '股四头肌', '腘绳肌', '臀肌', '小腿', '腹肌'],
+        // General
+        appName: 'MuscuTrack',
+        loading: '加载中...',
+        close: '关闭',
+        change: '更换',
+        cancel: '取消',
+        confirm: '确认',
+        save: '保存',
+        delete: '删除',
+        start: '开始',
+        language: '语言',
+        // Auth
+        trackingSubtitle: '健身追踪',
+        enterUsername: '请输入您的用户名：',
+        usernamePlaceholder: '例如：BASILE',
+        login: '登录',
+        loginSuccess: '登录成功',
+        loginError: '登录失败',
+        // User info
+        user: '用户',
+        yourId: '您的ID：',
+        noteId: '请记下此ID，以便从其他设备重新登录。',
+        online: '在线',
+        offline: '离线',
+        // Navigation
+        programs: '训练计划',
+        history: '历史记录',
+        session: '训练',
+        edit: '编辑',
+        newProgram: '新计划',
+        progression: '进度',
+        // Home
+        noProgram: '没有训练计划',
+        createFirstProgram: '创建您的第一个训练计划以开始追踪。',
+        createProgram: '创建计划',
+        newProgramBtn: '+ 新计划',
+        exerciseCount: (n) => `${n} 个动作`,
+        lastSession: '上次训练：',
+        sessionCount: (n) => `${n} 次训练`,
+        // Workout editor
+        programName: '计划名称',
+        programNamePlaceholder: '例如：推、拉、腿...',
+        exercises: '动作',
+        noExerciseAdded: '未添加任何动作',
+        addExercise: '添加动作',
+        exerciseName: '动作名称',
+        muscleGroup: '肌肉群',
+        addBtn: '+ 添加',
+        createProgramBtn: '创建计划',
+        weight: '重量',
+        kg: '公斤',
+        sets: '组数',
+        // Workout editor toasts
+        enterExerciseName: '请输入动作名称',
+        selectMuscleGroup: '请选择肌肉群',
+        enterProgramName: '请输入计划名称',
+        addAtLeastOneExercise: '请至少添加一个动作',
+        maxProgramsReached: '已达到3个计划上限',
+        programModified: '计划已修改',
+        programCreated: '计划已创建',
+        // Delete program
+        deleteProgram: '删除计划',
+        deleteProgramConfirm: (name) => `删除"${name}"及其所有训练记录？`,
+        programDeleted: '计划已删除',
+        // Session
+        addSet: '+ 添加一组',
+        setsProgress: (done, total) => `${done}/${total} 组`,
+        cancelSession: '取消训练',
+        cancelSessionConfirm: '确定要取消此次训练吗？数据将不会被保存。',
+        finishSession: '完成训练',
+        validateAtLeastOneSet: '请至少完成一组',
+        sessionSaved: '训练已保存！',
+        reps: '次',
+        // History
+        noHistory: '没有历史记录',
+        createAndDoSession: '创建计划并完成训练后可在此查看历史。',
+        noSession: '没有训练记录',
+        doSessionForHistory: '完成训练后可查看历史。',
+        deleteSession: '删除训练记录',
+        deleteSessionConfirm: '确定要删除此次训练记录吗？',
+        sessionDeleted: '训练记录已删除',
+        viewProgression: '查看进度',
+        seriesCount: (n) => `${n} 组`,
+        // Progression
+        notEnoughData: '数据不足',
+        doAtLeast2Sessions: '至少完成2次训练才能查看进度。',
+        notEnoughDataForProgression: '数据不足，无法显示进度。',
+        // Comparison
+        prev: '上次',
+        current: '本次',
+        vsPreviousSession: (date) => `对比上次训练 (${date})`,
+        setsShort: '组',
+        // Errors
+        networkError: '网络错误',
+        // Date locale
+        dateLocale: 'zh-CN',
+    }
+};
+
+const i18n = {
+    _lang: localStorage.getItem('mt_lang') || 'fr',
+    get lang() { return this._lang; },
+    set lang(v) { this._lang = v; localStorage.setItem('mt_lang', v); },
+    t(key) { return translations[this._lang]?.[key] ?? translations.fr[key] ?? key; }
+};
+
+function t(key) { return i18n.t(key); }
+
+// =============================================================
 // MUSCLE GROUPS
 // =============================================================
-const MUSCLE_GROUPS = [
-    'Pectoraux',
-    'Dos',
-    'Épaules',
-    'Biceps',
-    'Triceps',
-    'Quadriceps',
-    'Ischio-jambiers',
-    'Fessiers',
-    'Mollets',
-    'Abdominaux',
-];
+function getMuscleGroups() {
+    return translations[i18n.lang].muscles;
+}
 
 // =============================================================
 // API LAYER
@@ -34,8 +240,8 @@ async function apiCall(method, path, body) {
         body: body !== undefined ? JSON.stringify(body) : undefined
     });
     if (!res.ok) {
-        const err = await res.json().catch(() => ({ error: 'Erreur réseau' }));
-        throw new Error(err.error || `Erreur ${res.status}`);
+        const err = await res.json().catch(() => ({ error: t('networkError') }));
+        throw new Error(err.error || `${t('networkError')} ${res.status}`);
     }
     return res.json();
 }
@@ -165,17 +371,17 @@ function generateId() {
 
 function formatDate(dateStr) {
     const d = new Date(dateStr);
-    return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+    return d.toLocaleDateString(t('dateLocale'), { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
 function formatDateShort(dateStr) {
     const d = new Date(dateStr);
-    return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+    return d.toLocaleDateString(t('dateLocale'), { day: 'numeric', month: 'short' });
 }
 
 function formatTime(dateStr) {
     const d = new Date(dateStr);
-    return d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    return d.toLocaleTimeString(t('dateLocale'), { hour: '2-digit', minute: '2-digit' });
 }
 
 function showToast(message) {
@@ -250,7 +456,7 @@ const App = {
         main.innerHTML = `
             <div class="empty-state">
                 <div class="loading-spinner"></div>
-                <p style="margin-top:16px;color:var(--text-secondary)">Chargement...</p>
+                <p style="margin-top:16px;color:var(--text-secondary)">${t('loading')}</p>
             </div>
         `;
     },
@@ -266,7 +472,7 @@ const App = {
         const headerActions = document.getElementById('header-actions');
 
         tabBar.classList.add('hidden');
-        headerTitle.textContent = 'MuscuTrack';
+        headerTitle.textContent = t('appName');
         headerActions.innerHTML = '';
 
         main.innerHTML = `
@@ -278,16 +484,22 @@ const App = {
                         <line x1="20" y1="8" x2="20" y2="16"/>
                     </svg>
                 </div>
-                <h2 style="color:var(--text-primary);margin:0 0 8px">MuscuTrack</h2>
-                <p style="color:var(--text-secondary);font-size:14px;margin:0 0 24px">Suivi de musculation</p>
+                <h2 style="color:var(--text-primary);margin:0 0 8px">${t('appName')}</h2>
+                <p style="color:var(--text-secondary);font-size:14px;margin:0 0 24px">${t('trackingSubtitle')}</p>
 
-                <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px">Entrez votre nom d'utilisateur :</div>
+                <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px">${t('enterUsername')}</div>
                 <div style="display:flex;gap:8px">
-                    <input type="text" class="form-input" id="auth-id-input" placeholder="Ex: BASILE"
+                    <input type="text" class="form-input" id="auth-id-input" placeholder="${t('usernamePlaceholder')}"
                            style="flex:1" maxlength="64">
-                    <button class="btn btn-primary" id="auth-login-btn">Connexion</button>
+                    <button class="btn btn-primary" id="auth-login-btn">${t('login')}</button>
                 </div>
                 <div id="auth-error" style="color:var(--accent);font-size:13px;margin-top:12px;display:none"></div>
+
+                <div style="margin-top:20px;text-align:center">
+                    <button class="btn btn-secondary btn-sm" id="auth-lang-btn" style="font-size:12px">
+                        ${i18n.lang === 'fr' ? '中文' : 'Français'}
+                    </button>
+                </div>
             </div>
         `;
 
@@ -303,11 +515,11 @@ const App = {
             try {
                 await initAuth(id);
                 await syncFromServer();
-                showToast('Connexion réussie');
+                showToast(t('loginSuccess'));
                 this.onAuthSuccess();
             } catch (err) {
                 const errorEl = document.getElementById('auth-error');
-                errorEl.textContent = err.message || 'Erreur de connexion';
+                errorEl.textContent = err.message || t('loginError');
                 errorEl.style.display = 'block';
                 btn.disabled = false;
             }
@@ -315,6 +527,12 @@ const App = {
 
         document.getElementById('auth-id-input').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') document.getElementById('auth-login-btn').click();
+        });
+
+        document.getElementById('auth-lang-btn').addEventListener('click', () => {
+            i18n.lang = i18n.lang === 'fr' ? 'zh' : 'fr';
+            document.documentElement.lang = i18n.lang === 'zh' ? 'zh' : 'fr';
+            this.showAuth();
         });
     },
 
@@ -387,7 +605,7 @@ const App = {
         // User ID button in header (when authenticated)
         if (currentUserId) {
             headerActions.innerHTML = `
-                <button class="header-btn" id="btn-user-id" aria-label="Utilisateur" title="${escapeHtml(currentUserId)}">
+                <button class="header-btn" id="btn-user-id" aria-label="${t('user')}" title="${escapeHtml(currentUserId)}">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                         <circle cx="12" cy="7" r="4"/>
@@ -400,68 +618,97 @@ const App = {
             }, 0);
         }
 
+        // Update tab labels
+        const tabHome = document.getElementById('tab-label-home');
+        const tabHistory = document.getElementById('tab-label-history');
+        if (tabHome) tabHome.textContent = t('programs');
+        if (tabHistory) tabHistory.textContent = t('history');
+
+        // Update html lang
+        document.documentElement.lang = i18n.lang === 'zh' ? 'zh' : 'fr';
+
         // Update active tab
-        document.querySelectorAll('#tab-bar .tab').forEach(t => {
-            t.classList.toggle('active',
-                t.dataset.page === this.currentPage ||
-                (this.currentPage === 'workout-editor' && t.dataset.page === 'home') ||
-                (this.currentPage === 'session' && t.dataset.page === 'home') ||
-                (this.currentPage === 'progression' && t.dataset.page === 'history')
+        document.querySelectorAll('#tab-bar .tab').forEach(tab => {
+            tab.classList.toggle('active',
+                tab.dataset.page === this.currentPage ||
+                (this.currentPage === 'workout-editor' && tab.dataset.page === 'home') ||
+                (this.currentPage === 'session' && tab.dataset.page === 'home') ||
+                (this.currentPage === 'progression' && tab.dataset.page === 'history')
             );
         });
 
         switch (this.currentPage) {
             case 'home':
-                headerTitle.textContent = 'MuscuTrack';
+                headerTitle.textContent = t('appName');
                 renderHome(main);
                 break;
             case 'workout-editor':
-                headerTitle.textContent = this.pageParams.workoutId ? 'Modifier' : 'Nouveau programme';
+                headerTitle.textContent = this.pageParams.workoutId ? t('edit') : t('newProgram');
                 btnBack.classList.remove('hidden');
                 btnBack.onclick = () => this.goBack();
                 renderWorkoutEditor(main, this.pageParams);
                 break;
             case 'session':
-                headerTitle.textContent = 'Séance';
+                headerTitle.textContent = t('session');
                 tabBar.classList.add('hidden');
                 main.classList.add('session-mode');
                 renderSession(main, this.pageParams);
                 break;
             case 'history':
-                headerTitle.textContent = 'Historique';
+                headerTitle.textContent = t('history');
                 renderHistory(main, this.pageParams);
                 break;
             case 'progression':
-                headerTitle.textContent = 'Progression';
+                headerTitle.textContent = t('progression');
                 btnBack.classList.remove('hidden');
                 btnBack.onclick = () => this.goBack();
                 renderProgression(main, this.pageParams);
                 break;
             default:
-                headerTitle.textContent = 'MuscuTrack';
+                headerTitle.textContent = t('appName');
                 renderHome(main);
         }
     },
 
     showUserInfo() {
         const modalContainer = document.getElementById('modal-container');
+        const langOptions = [
+            { code: 'fr', label: 'Français' },
+            { code: 'zh', label: '中文' }
+        ];
+        const langSelectHtml = langOptions.map(l =>
+            `<option value="${l.code}" ${i18n.lang === l.code ? 'selected' : ''}>${l.label}</option>`
+        ).join('');
+
         modalContainer.innerHTML = `
             <div class="confirm-modal">
-                <h3>Utilisateur</h3>
-                <p style="font-size:13px;color:var(--text-secondary);margin-bottom:8px">Votre ID :</p>
+                <h3>${t('user')}</h3>
+                <p style="font-size:13px;color:var(--text-secondary);margin-bottom:8px">${t('yourId')}</p>
                 <div style="background:var(--bg-primary);border-radius:8px;padding:10px 12px;font-family:monospace;font-size:14px;color:var(--accent);word-break:break-all;margin-bottom:4px">
                     ${escapeHtml(currentUserId)}
                 </div>
                 <p style="font-size:11px;color:var(--text-muted);margin-bottom:16px">
-                    Notez cet ID pour vous reconnecter depuis un autre appareil.
-                    ${isOnline ? '<span style="color:var(--success)">En ligne</span>' : '<span style="color:var(--accent)">Hors-ligne</span>'}
+                    ${t('noteId')}
+                    ${isOnline ? `<span style="color:var(--success)">${t('online')}</span>` : `<span style="color:var(--accent)">${t('offline')}</span>`}
                 </p>
+                <div style="margin-bottom:16px">
+                    <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px">${t('language')}</label>
+                    <select class="form-input" id="lang-select" style="width:100%">
+                        ${langSelectHtml}
+                    </select>
+                </div>
                 <div class="confirm-modal-actions">
-                    <button class="btn btn-secondary" onclick="closeModal()">Fermer</button>
-                    <button class="btn btn-danger" id="btn-change-user">Changer</button>
+                    <button class="btn btn-secondary" onclick="closeModal()">${t('close')}</button>
+                    <button class="btn btn-danger" id="btn-change-user">${t('change')}</button>
                 </div>
             </div>
         `;
+        document.getElementById('lang-select').addEventListener('change', (e) => {
+            i18n.lang = e.target.value;
+            document.documentElement.lang = i18n.lang === 'zh' ? 'zh' : 'fr';
+            closeModal();
+            this.render();
+        });
         document.getElementById('btn-change-user').addEventListener('click', () => {
             closeModal();
             localStorage.removeItem('mt_user_id');
@@ -487,9 +734,9 @@ function renderHome(container) {
                     <line x1="4" y1="8" x2="4" y2="16"/>
                     <line x1="20" y1="8" x2="20" y2="16"/>
                 </svg>
-                <h3>Aucun programme</h3>
-                <p>Créez votre premier programme d'entraînement pour commencer le suivi.</p>
-                <button class="btn btn-primary" onclick="App.pushPage('workout-editor')">Créer un programme</button>
+                <h3>${t('noProgram')}</h3>
+                <p>${t('createFirstProgram')}</p>
+                <button class="btn btn-primary" onclick="App.pushPage('workout-editor')">${t('createProgram')}</button>
             </div>
         `;
         return;
@@ -517,14 +764,14 @@ function renderHome(container) {
                     </button>
                 </div>
                 <div class="workout-meta">
-                    ${w.exercises.length} exercice${w.exercises.length > 1 ? 's' : ''}
-                    ${lastSession ? ' · Dernière séance : ' + formatDateShort(lastSession.date) : ''}
-                    ${sessionCount > 0 ? ` · ${sessionCount} séance${sessionCount > 1 ? 's' : ''}` : ''}
+                    ${t('exerciseCount')(w.exercises.length)}
+                    ${lastSession ? ` · ${t('lastSession')} ` + formatDateShort(lastSession.date) : ''}
+                    ${sessionCount > 0 ? ` · ${t('sessionCount')(sessionCount)}` : ''}
                 </div>
                 <div class="workout-exercises-preview">${exerciseTags}</div>
                 <div class="workout-actions">
-                    <button class="btn btn-primary" onclick="startSession('${w.id}')">Démarrer</button>
-                    <button class="btn btn-secondary" onclick="deleteWorkoutConfirm('${w.id}')">Supprimer</button>
+                    <button class="btn btn-primary" onclick="startSession('${w.id}')">${t('start')}</button>
+                    <button class="btn btn-secondary" onclick="deleteWorkoutConfirm('${w.id}')">${t('delete')}</button>
                 </div>
             </div>
         `;
@@ -533,7 +780,7 @@ function renderHome(container) {
     if (workouts.length < 3) {
         html += `
             <button class="btn btn-secondary btn-block mt-16" onclick="App.pushPage('workout-editor')">
-                + Nouveau programme
+                ${t('newProgramBtn')}
             </button>
         `;
     }
@@ -549,8 +796,8 @@ function deleteWorkoutConfirm(id) {
     const workout = Store.getWorkouts().find(w => w.id === id);
     if (!workout) return;
     showConfirmModal(
-        'Supprimer le programme',
-        `Supprimer "${escapeHtml(workout.name)}" et toutes ses séances ?`,
+        t('deleteProgram'),
+        t('deleteProgramConfirm')(escapeHtml(workout.name)),
         () => {
             const workouts = Store.getWorkouts().filter(w => w.id !== id);
             Store.saveWorkouts(workouts);
@@ -560,7 +807,7 @@ function deleteWorkoutConfirm(id) {
             if (currentUserId) {
                 apiCall('DELETE', `/api/workouts/${id}`).catch(() => {});
             }
-            showToast('Programme supprimé');
+            showToast(t('programDeleted'));
             App.navigate('home');
         }
     );
@@ -596,13 +843,13 @@ function renderWorkoutEditor(container, params) {
                     </div>
                     <div class="editor-exercise-fields">
                         <div class="editor-field">
-                            <label>Charge</label>
+                            <label>${t('weight')}</label>
                             <input type="number" inputmode="decimal" class="inline-input" value="${ex.defaultWeight}"
                                    onchange="window._editorUpdateWeight(${i}, this.value)" min="0" step="0.5">
-                            <label>kg</label>
+                            <label>${t('kg')}</label>
                         </div>
                         <div class="editor-field">
-                            <label>Séries</label>
+                            <label>${t('sets')}</label>
                             <input type="number" inputmode="numeric" class="inline-input" value="${ex.defaultSets}"
                                    onchange="window._editorUpdateSets(${i}, this.value)" min="1" max="20" style="width:50px">
                         </div>
@@ -612,32 +859,32 @@ function renderWorkoutEditor(container, params) {
         });
 
         // Muscle group options
-        const muscleOptions = MUSCLE_GROUPS.map(m => `<option value="${m}">${m}</option>`).join('');
+        const muscleOptions = getMuscleGroups().map(m => `<option value="${m}">${m}</option>`).join('');
 
         container.innerHTML = `
             <div class="form-group">
-                <label class="form-label">Nom du programme</label>
+                <label class="form-label">${t('programName')}</label>
                 <input type="text" class="form-input" id="workout-name" value="${escapeHtml(state.name)}"
-                       placeholder="Ex: Push, Pull, Legs..." maxlength="30">
+                       placeholder="${t('programNamePlaceholder')}" maxlength="30">
             </div>
 
             <div class="form-group">
-                <label class="form-label">Exercices</label>
-                ${exercisesHtml || '<p class="text-muted" style="font-size:14px;padding:8px 0">Aucun exercice ajouté</p>'}
+                <label class="form-label">${t('exercises')}</label>
+                ${exercisesHtml || `<p class="text-muted" style="font-size:14px;padding:8px 0">${t('noExerciseAdded')}</p>`}
             </div>
 
             <div class="add-exercise-form" style="background:var(--bg-card);border-radius:var(--radius);padding:14px;border:1px dashed var(--border);margin-bottom:16px">
-                <div style="font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px">Ajouter un exercice</div>
-                <input type="text" class="form-input" id="new-exercise-name" placeholder="Nom de l'exercice" maxlength="50" style="margin-bottom:10px">
+                <div style="font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px">${t('addExercise')}</div>
+                <input type="text" class="form-input" id="new-exercise-name" placeholder="${t('exerciseName')}" maxlength="50" style="margin-bottom:10px">
                 <select class="form-input" id="new-exercise-muscle" style="margin-bottom:12px">
-                    <option value="" disabled selected>Groupe musculaire</option>
+                    <option value="" disabled selected>${t('muscleGroup')}</option>
                     ${muscleOptions}
                 </select>
-                <button class="btn btn-secondary btn-block btn-sm" onclick="window._editorAddExercise()">+ Ajouter</button>
+                <button class="btn btn-secondary btn-block btn-sm" onclick="window._editorAddExercise()">${t('addBtn')}</button>
             </div>
 
             <button class="btn btn-primary btn-block" onclick="saveWorkout()" id="btn-save-workout">
-                ${existing ? 'Enregistrer' : 'Créer le programme'}
+                ${existing ? t('save') : t('createProgramBtn')}
             </button>
         `;
 
@@ -667,12 +914,12 @@ function renderWorkoutEditor(container, params) {
         const muscle = muscleSelect.value;
 
         if (!name) {
-            showToast('Entrez un nom d\'exercice');
+            showToast(t('enterExerciseName'));
             nameInput.focus();
             return;
         }
         if (!muscle) {
-            showToast('Sélectionnez un groupe musculaire');
+            showToast(t('selectMuscleGroup'));
             muscleSelect.focus();
             return;
         }
@@ -694,11 +941,11 @@ function saveWorkout() {
     const name = document.getElementById('workout-name')?.value?.trim() || state.name.trim();
 
     if (!name) {
-        showToast('Entrez un nom pour le programme');
+        showToast(t('enterProgramName'));
         return;
     }
     if (state.exercises.length === 0) {
-        showToast('Ajoutez au moins un exercice');
+        showToast(t('addAtLeastOneExercise'));
         return;
     }
 
@@ -713,7 +960,7 @@ function saveWorkout() {
         }
     } else {
         if (workouts.length >= 3) {
-            showToast('Maximum 3 programmes atteint');
+            showToast(t('maxProgramsReached'));
             return;
         }
         workouts.push({
@@ -724,7 +971,7 @@ function saveWorkout() {
     }
 
     Store.saveWorkouts(workouts);
-    showToast(workoutId ? 'Programme modifié' : 'Programme créé');
+    showToast(workoutId ? t('programModified') : t('programCreated'));
     App.goBack();
 }
 
@@ -788,13 +1035,13 @@ function renderComparisonHtml(comparison) {
     const prevSetsStr = p.sets.map(s => `${s.weight}x${s.reps}`).join(' / ');
     let prevRowHtml = `
         <div class="perf-row">
-            <span class="perf-row-label">Préc.</span>
+            <span class="perf-row-label">${t('prev')}</span>
             <div class="perf-row-values">
-                <span>${p.maxWeight} kg</span>
+                <span>${p.maxWeight} ${t('kg')}</span>
                 <span style="color:var(--text-muted)">|</span>
-                <span>${p.totalReps} reps</span>
+                <span>${p.totalReps} ${t('reps')}</span>
                 <span style="color:var(--text-muted)">|</span>
-                <span>${p.sets.length} ser.</span>
+                <span>${p.sets.length} ${t('setsShort')}</span>
             </div>
         </div>
         <div style="font-size:10px;color:var(--text-muted);margin-top:2px">${prevSetsStr}</div>
@@ -813,10 +1060,10 @@ function renderComparisonHtml(comparison) {
 
         currentHtml = `
             <div class="perf-row" style="margin-top:4px;padding-top:4px;border-top:1px solid var(--border)">
-                <span class="perf-row-label" style="font-weight:600;color:var(--text-primary)">Actuel</span>
+                <span class="perf-row-label" style="font-weight:600;color:var(--text-primary)">${t('current')}</span>
                 <div class="perf-row-values">
-                    <span class="perf-badge ${weightClass}">${weightDiff !== 0 ? (weightClass === 'up' ? arrowUp : arrowDown) : ''} ${weightSign}${weightDiff} kg</span>
-                    <span class="perf-badge ${repsClass}">${repsDiff !== 0 ? (repsClass === 'up' ? arrowUp : arrowDown) : ''} ${repsSign}${repsDiff} reps</span>
+                    <span class="perf-badge ${weightClass}">${weightDiff !== 0 ? (weightClass === 'up' ? arrowUp : arrowDown) : ''} ${weightSign}${weightDiff} ${t('kg')}</span>
+                    <span class="perf-badge ${repsClass}">${repsDiff !== 0 ? (repsClass === 'up' ? arrowUp : arrowDown) : ''} ${repsSign}${repsDiff} ${t('reps')}</span>
                 </div>
             </div>
         `;
@@ -824,7 +1071,7 @@ function renderComparisonHtml(comparison) {
 
     return `
         <div class="perf-comparison">
-            <div class="perf-comparison-title">vs séance précédente (${formatDateShort(comparison.prev.date)})</div>
+            <div class="perf-comparison-title">${t('vsPreviousSession')(formatDateShort(comparison.prev.date))}</div>
             ${prevRowHtml}
             ${currentHtml}
         </div>
@@ -874,7 +1121,7 @@ function renderSession(container, params) {
     if (params.resumed) startAutoSave();
 
     const workout = Store.getWorkouts().find(w => w.id === session.workoutId);
-    const workoutName = workout ? workout.name : 'Séance';
+    const workoutName = workout ? workout.name : t('session');
 
     function render() {
         let html = `<div style="margin-bottom:8px">
@@ -898,12 +1145,12 @@ function renderSession(container, params) {
                             <input type="number" inputmode="decimal" class="inline-input" value="${set.weight}"
                                    onchange="updateSet(${exIdx},${setIdx},'weight',this.value)"
                                    ${set.completed ? 'readonly' : ''} min="0" step="0.5">
-                            <span>kg</span>
+                            <span>${t('kg')}</span>
                             <span style="color:var(--text-muted);margin:0 2px">x</span>
                             <input type="number" inputmode="numeric" class="inline-input" value="${set.reps}"
                                    onchange="updateSet(${exIdx},${setIdx},'reps',this.value)"
                                    ${set.completed ? 'readonly' : ''} min="0" style="width:50px">
-                            <span>reps</span>
+                            <span>${t('reps')}</span>
                         </div>
                         <button class="set-check" onclick="toggleSet(${exIdx},${setIdx})">
                             ${set.completed ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0f0f1a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' : ''}
@@ -933,7 +1180,7 @@ function renderSession(container, params) {
                     </div>
                     ${comparisonHtml}
                     ${setsHtml}
-                    <button class="add-set-btn" onclick="addSet(${exIdx})">+ Ajouter une série</button>
+                    <button class="add-set-btn" onclick="addSet(${exIdx})">${t('addSet')}</button>
                 </div>
             `;
         });
@@ -944,10 +1191,10 @@ function renderSession(container, params) {
         html += `
             <div class="session-footer">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-                    <span style="font-size:13px;color:var(--text-secondary)">${completedSets}/${totalSets} séries</span>
-                    <button class="btn btn-danger btn-sm" onclick="cancelSession()">Annuler</button>
+                    <span style="font-size:13px;color:var(--text-secondary)">${t('setsProgress')(completedSets, totalSets)}</span>
+                    <button class="btn btn-danger btn-sm" onclick="cancelSession()">${t('cancel')}</button>
                 </div>
-                <button class="btn btn-success btn-block" onclick="finishSession()">Terminer la séance</button>
+                <button class="btn btn-success btn-block" onclick="finishSession()">${t('finishSession')}</button>
             </div>
         `;
 
@@ -986,7 +1233,7 @@ function renderSession(container, params) {
     window.finishSession = () => {
         const completedSets = session.exercises.reduce((acc, ex) => acc + ex.sets.filter(s => s.completed).length, 0);
         if (completedSets === 0) {
-            showToast('Validez au moins une série');
+            showToast(t('validateAtLeastOneSet'));
             return;
         }
 
@@ -1024,14 +1271,14 @@ function renderSession(container, params) {
             Store.saveWorkouts(workouts);
         }
 
-        showToast('Séance enregistrée !');
+        showToast(t('sessionSaved'));
         App.navigate('home');
     };
 
     window.cancelSession = () => {
         showConfirmModal(
-            'Annuler la séance',
-            'Voulez-vous vraiment annuler cette séance ? Les données ne seront pas sauvegardées.',
+            t('cancelSession'),
+            t('cancelSessionConfirm'),
             () => {
                 Store.clearActiveSession();
                 stopAutoSave();
@@ -1051,8 +1298,8 @@ function renderHistory(container, params) {
     if (workouts.length === 0) {
         container.innerHTML = `
             <div class="empty-state">
-                <h3>Aucun historique</h3>
-                <p>Créez un programme et effectuez une séance pour voir l'historique ici.</p>
+                <h3>${t('noHistory')}</h3>
+                <p>${t('createAndDoSession')}</p>
             </div>
         `;
         return;
@@ -1073,8 +1320,8 @@ function renderHistory(container, params) {
     if (sessions.length === 0) {
         container.innerHTML = filterHtml + `
             <div class="empty-state">
-                <h3>Aucune séance</h3>
-                <p>Effectuez une séance pour voir l'historique.</p>
+                <h3>${t('noSession')}</h3>
+                <p>${t('doSessionForHistory')}</p>
             </div>
         `;
         window.selectHistoryWorkout = (wId) => {
@@ -1116,7 +1363,7 @@ function renderHistory(container, params) {
         session.exercises.forEach(ex => {
             const maxWeight = Math.max(...ex.sets.map(s => s.weight));
             const totalReps = ex.sets.reduce((acc, s) => acc + s.reps, 0);
-            const setsStr = ex.sets.map(s => `${s.weight}kg x${s.reps}`).join(', ');
+            const setsStr = ex.sets.map(s => `${s.weight}${t('kg')} x${s.reps}`).join(', ');
 
             // Compare with same exercise in previous session
             let perfClass = '';
@@ -1132,14 +1379,14 @@ function renderHistory(container, params) {
                     if (maxWeight > prevMaxWeight || totalReps > prevTotalReps) {
                         perfClass = 'history-perf-up';
                         const parts = [];
-                        if (weightDiff > 0) parts.push(`+${weightDiff}kg`);
-                        if (repsDiff > 0) parts.push(`+${repsDiff} reps`);
+                        if (weightDiff > 0) parts.push(`+${weightDiff}${t('kg')}`);
+                        if (repsDiff > 0) parts.push(`+${repsDiff} ${t('reps')}`);
                         perfBadgeHtml = `<span class="history-perf-badge up">${parts.join(', ')}</span>`;
                     } else if (maxWeight < prevMaxWeight && totalReps < prevTotalReps) {
                         perfClass = 'history-perf-down';
                         const parts = [];
-                        if (weightDiff < 0) parts.push(`${weightDiff}kg`);
-                        if (repsDiff < 0) parts.push(`${repsDiff} reps`);
+                        if (weightDiff < 0) parts.push(`${weightDiff}${t('kg')}`);
+                        if (repsDiff < 0) parts.push(`${repsDiff} ${t('reps')}`);
                         perfBadgeHtml = `<span class="history-perf-badge down">${parts.join(', ')}</span>`;
                     }
                 }
@@ -1153,8 +1400,8 @@ function renderHistory(container, params) {
                         ${perfBadgeHtml}
                     </div>
                     <div class="history-exercise-detail">
-                        <span class="history-exercise-weight">${maxWeight} kg</span>
-                        <div style="font-size:11px;color:var(--text-muted)">${ex.sets.length} série${ex.sets.length > 1 ? 's' : ''}</div>
+                        <span class="history-exercise-weight">${maxWeight} ${t('kg')}</span>
+                        <div style="font-size:11px;color:var(--text-muted)">${t('seriesCount')(ex.sets.length)}</div>
                     </div>
                 </div>
             `;
@@ -1166,7 +1413,7 @@ function renderHistory(container, params) {
     // Progression button
     let progressionBtn = `
         <button class="btn btn-secondary btn-block mt-16" onclick="App.pushPage('progression', {workoutId:'${selectedWorkoutId}'})">
-            Voir la progression
+            ${t('viewProgression')}
         </button>
     `;
 
@@ -1182,11 +1429,11 @@ function renderHistory(container, params) {
 
     window.deleteSessionConfirm = (sessionId, workoutId) => {
         showConfirmModal(
-            'Supprimer la séance',
-            'Voulez-vous vraiment supprimer cette séance ?',
+            t('deleteSession'),
+            t('deleteSessionConfirm'),
             () => {
                 Store.deleteSession(sessionId);
-                showToast('Séance supprimée');
+                showToast(t('sessionDeleted'));
                 App.navigate('history', { selectedWorkoutId: workoutId, selectedSessionIdx: 0 });
             }
         );
@@ -1204,8 +1451,8 @@ function renderProgression(container, params) {
     if (!workout || sessions.length < 2) {
         container.innerHTML = `
             <div class="empty-state">
-                <h3>Pas assez de données</h3>
-                <p>Effectuez au moins 2 séances pour voir la progression.</p>
+                <h3>${t('notEnoughData')}</h3>
+                <p>${t('doAtLeast2Sessions')}</p>
             </div>
         `;
         return;
@@ -1215,7 +1462,7 @@ function renderProgression(container, params) {
     const chronoSessions = [...sessions].reverse();
 
     let html = `<div style="font-size:14px;color:var(--text-secondary);margin-bottom:16px">
-        ${escapeHtml(workout.name)} - ${sessions.length} séance${sessions.length > 1 ? 's' : ''}
+        ${escapeHtml(workout.name)} - ${t('sessionCount')(sessions.length)}
     </div>`;
 
     // Get all unique exercise names across sessions
@@ -1267,7 +1514,7 @@ function renderProgression(container, params) {
     if (chartsToRender.length === 0) {
         html += `
             <div class="empty-state">
-                <p>Pas assez de données pour afficher la progression.</p>
+                <p>${t('notEnoughDataForProgression')}</p>
             </div>
         `;
     }
@@ -1394,8 +1641,8 @@ function showConfirmModal(title, message, onConfirm) {
             <h3>${title}</h3>
             <p>${message}</p>
             <div class="confirm-modal-actions">
-                <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
-                <button class="btn btn-danger" id="confirm-action">Confirmer</button>
+                <button class="btn btn-secondary" onclick="closeModal()">${t('cancel')}</button>
+                <button class="btn btn-danger" id="confirm-action">${t('confirm')}</button>
             </div>
         </div>
     `;
