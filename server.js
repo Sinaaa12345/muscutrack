@@ -8,6 +8,7 @@ const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+app.use(express.static(__dirname));
 
 // =============================================================
 // REDIS CONNECTION
@@ -306,13 +307,6 @@ app.delete('/api/sessions/active', requireRedis, authMiddleware, async (req, res
 });
 
 // =============================================================
-// FALLBACK - Serve index.html for SPA
-// =============================================================
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-// =============================================================
 // HEALTH CHECK
 // =============================================================
 app.get('/health', (req, res) => {
@@ -322,6 +316,15 @@ app.get('/health', (req, res) => {
         timestamp: new Date().toISOString()
     });
 });
+
+// =============================================================
+// FALLBACK - Serve index.html for SPA
+// =============================================================
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+
 
 
 // =============================================================
