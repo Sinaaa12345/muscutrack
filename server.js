@@ -313,9 +313,64 @@ app.get('*', (req, res) => {
 });
 
 // =============================================================
+// HEALTH CHECK
+// =============================================================
+app.get('/health', (req, res) => {
+    res.status(200).json({ 
+        status: 'ok', 
+        redis: redisConnected ? 'connected' : 'disconnected',
+        timestamp: new Date().toISOString()
+    });
+});
+
+// =============================================================
+// FALLBACK - Serve index.html for SPA
+// =============================================================
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// =============================================================
 // START SERVER
 // =============================================================
 app.listen(PORT, () => {
     console.log(`MuscuTrack server running on http://localhost:${PORT}`);
     console.log(`Redis: ${redisConnected ? 'connected' : 'disconnected (localStorage fallback)'}`);
 });
+
+// =============================================================
+// START SERVER
+// =============================================================
+//const server = app.listen(PORT, '0.0.0.0', () => {
+    //console.log(`MuscuTrack server running on http://localhost:${PORT}`);
+    //console.log(`Redis: ${redisConnected ? 'connected' : 'disconnected (localStorage fallback)'}`);
+//});
+
+// =============================================================
+// GRACEFUL SHUTDOWN
+// =============================================================
+process.on('SIGTERM', async () => {
+    console.log('SIGTERM signal received: closing HTTP server');
+    server.close(async () => {
+        console.log('HTTP server closed');
+        if (redisConnected) {
+            await redis.quit();
+            console.log('Redis connection closed');
+        }
+        process.exit(0);
+    });
+});
+
+process.on('SIGINT', async () => {
+    console.log('SIGINT signal received: closing HTTP server');
+    server.close(async () => {
+        console.log('HTTP server closed');
+        if (redisConnected) {
+            await redis.quit();
+            console.log('Redis connection closed');
+        }
+        process.exit(0);
+    });
+});
+
+
