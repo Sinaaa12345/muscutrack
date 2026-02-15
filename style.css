@@ -186,6 +186,15 @@ button {
     color: var(--accent);
 }
 
+.tab img {
+    transition: filter 0.2s, opacity 0.2s;
+}
+
+.tab.active img {
+    filter: none;
+    opacity: 1;
+}
+
 .tab:active {
     color: var(--accent-light);
 }

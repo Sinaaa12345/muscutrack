@@ -603,11 +603,7 @@ const App = {
         main.innerHTML = `
             <div class="auth-container">
                 <div class="auth-icon">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M6.5 6.5h11M6.5 17.5h11M2 12h2M20 12h2M5 6.5V4M5 20v-2.5M19 6.5V4M19 20v-2.5M5 6.5a1.5 1.5 0 0 1-1.5 1.5M5 6.5a1.5 1.5 0 0 0 1.5 1.5M5 17.5A1.5 1.5 0 0 0 3.5 16M5 17.5a1.5 1.5 0 0 1 1.5-1.5M19 6.5a1.5 1.5 0 0 0 1.5 1.5M19 6.5a1.5 1.5 0 0 1-1.5 1.5M19 17.5a1.5 1.5 0 0 1 1.5-1.5M19 17.5a1.5 1.5 0 0 0-1.5-1.5"/>
-                        <line x1="4" y1="8" x2="4" y2="16"/>
-                        <line x1="20" y1="8" x2="20" y2="16"/>
-                    </svg>
+                    <img src="icons/pngtree-dumbbell-vector-png-image_12735280.png" width="48" height="48" alt="" style="object-fit:contain">
                 </div>
                 <h2 style="color:var(--text-primary);margin:0 0 8px">${t('appName')}</h2>
                 <p style="color:var(--text-secondary);font-size:14px;margin:0 0 24px">${t('trackingSubtitle')}</p>
@@ -904,11 +900,7 @@ function renderHome(container) {
     if (workouts.length === 0) {
         container.innerHTML = `
             <div class="empty-state">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M6.5 6.5h11M6.5 17.5h11M2 12h2M20 12h2M5 6.5V4M5 20v-2.5M19 6.5V4M19 20v-2.5M5 6.5a1.5 1.5 0 0 1-1.5 1.5M5 6.5a1.5 1.5 0 0 0 1.5 1.5M5 17.5A1.5 1.5 0 0 0 3.5 16M5 17.5a1.5 1.5 0 0 1 1.5-1.5M19 6.5a1.5 1.5 0 0 0 1.5 1.5M19 6.5a1.5 1.5 0 0 1-1.5 1.5M19 17.5a1.5 1.5 0 0 1 1.5-1.5M19 17.5a1.5 1.5 0 0 0-1.5-1.5"/>
-                    <line x1="4" y1="8" x2="4" y2="16"/>
-                    <line x1="20" y1="8" x2="20" y2="16"/>
-                </svg>
+                <img src="icons/pngtree-dumbbell-vector-png-image_12735280.png" width="64" height="64" alt="" style="object-fit:contain;opacity:0.5">
                 <h3>${t('noProgram')}</h3>
                 <p>${t('createFirstProgram')}</p>
                 <button class="btn btn-primary" onclick="App.pushPage('workout-editor')">${t('createProgram')}</button>
