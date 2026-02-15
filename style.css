@@ -6,9 +6,11 @@
     --bg-secondary: #1a1a2e;
     --bg-tertiary: #16213e;
     --bg-card: #1a1a2e;
-    --accent: #e94560;
-    --accent-dark: #c23152;
-    --accent-light: #ff6b81;
+    --accent: #4ecca3;
+    --accent-dark: #3ba882;
+    --accent-light: #6fe8c0;
+    --danger: #e94560;
+    --danger-light: #ff6b81;
     --success: #4ecca3;
     --success-dark: #3ba882;
     --warning: #ffc857;
@@ -283,8 +285,8 @@ button {
 
 .btn-danger {
     background: transparent;
-    color: var(--accent);
-    border: 1px solid var(--accent);
+    color: var(--danger);
+    border: 1px solid var(--danger);
 }
 
 .btn-danger:active {
@@ -536,7 +538,7 @@ select.form-input option {
 }
 
 .editor-exercise-remove:active {
-    color: var(--accent);
+    color: var(--danger);
 }
 
 .editor-exercise-fields {
@@ -573,7 +575,7 @@ select.form-input option {
 }
 
 .session-exercise.perf-down {
-    border-color: var(--accent);
+    border-color: var(--danger);
 }
 
 .session-exercise-header {
@@ -592,7 +594,7 @@ select.form-input option {
 }
 
 .session-exercise.perf-down .session-exercise-header {
-    background: rgba(233, 69, 96, 0.1);
+    background: rgba(233, 69, 96, 0.08);
 }
 
 .session-exercise-muscle {
@@ -656,7 +658,7 @@ select.form-input option {
 
 .perf-badge.down {
     background: rgba(233, 69, 96, 0.15);
-    color: var(--accent-light);
+    color: var(--danger-light);
 }
 
 .perf-badge.neutral {
@@ -677,7 +679,7 @@ select.form-input option {
 }
 
 .perf-indicator.down {
-    color: var(--accent-light);
+    color: var(--danger-light);
 }
 
 .set-row {
@@ -758,7 +760,7 @@ select.form-input option {
 }
 
 .add-set-btn:active {
-    background: rgba(233, 69, 96, 0.05);
+    background: rgba(78, 204, 163, 0.08);
 }
 
 /* Session footer */
@@ -891,7 +893,7 @@ select.form-input option {
 
 .history-exercise-weight {
     font-weight: 600;
-    color: var(--accent-light);
+    color: var(--accent);
 }
 
 /* History performance indicators */
@@ -900,7 +902,7 @@ select.form-input option {
 }
 
 .history-exercise-row.history-perf-down {
-    border-left: 3px solid var(--accent);
+    border-left: 3px solid var(--danger);
 }
 
 .history-perf-badge {
@@ -919,7 +921,7 @@ select.form-input option {
 
 .history-perf-badge.down {
     background: rgba(233, 69, 96, 0.15);
-    color: var(--accent-light);
+    color: var(--danger-light);
 }
 
 /* ============================================
@@ -1105,6 +1107,24 @@ select.form-input option {
 }
 
 /* ============================================
+   THEME PICKER
+   ============================================ */
+.theme-pick {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.theme-pick:active {
+    transform: scale(0.9);
+}
+
+/* ============================================
    SCROLLBAR
    ============================================ */
 ::-webkit-scrollbar {
@@ -1150,7 +1170,7 @@ input[type="number"] {
     width: 36px;
     height: 36px;
     border: 3px solid var(--border);
-    border-top-color: var(--accent);
+    border-top-color: var(--success);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
 }

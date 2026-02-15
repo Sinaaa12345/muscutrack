@@ -27,9 +27,15 @@ const redis = new Redis({
 
 let redisConnected = false;
 
-redis.on('connect', () => {
+redis.on('connect', async () => {
     redisConnected = true;
     console.log('Redis connected');
+    // Register default users
+    try {
+        await redis.sadd('mt:users', 'BASILE', 'ROSLYN', 'CHAHINE');
+    } catch (err) {
+        console.error('Failed to register default users:', err.message);
+    }
 });
 
 redis.on('error', (err) => {

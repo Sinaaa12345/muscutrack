@@ -91,6 +91,8 @@ const translations = {
         deleteSessionConfirm: 'Voulez-vous vraiment supprimer cette séance ?',
         sessionDeleted: 'Séance supprimée',
         viewProgression: 'Voir la progression',
+        editSession: 'Modifier la séance',
+        editSessionSaved: 'Séance modifiée',
         seriesCount: (n) => `${n} série${n > 1 ? 's' : ''}`,
         // Progression
         notEnoughData: 'Pas assez de données',
@@ -103,6 +105,8 @@ const translations = {
         setsShort: 'ser.',
         // Errors
         networkError: 'Erreur réseau',
+        // Theme
+        theme: 'Thème',
         // Date locale
         dateLocale: 'fr-FR',
     },
@@ -191,6 +195,8 @@ const translations = {
         deleteSessionConfirm: '确定要删除此次训练记录吗？',
         sessionDeleted: '训练记录已删除',
         viewProgression: '查看进度',
+        editSession: '编辑训练记录',
+        editSessionSaved: '训练记录已修改',
         seriesCount: (n) => `${n} 组`,
         // Progression
         notEnoughData: '数据不足',
@@ -203,15 +209,24 @@ const translations = {
         setsShort: '组',
         // Errors
         networkError: '网络错误',
+        // Theme
+        theme: '主题',
         // Date locale
         dateLocale: 'zh-CN',
     }
 };
 
 const i18n = {
-    _lang: localStorage.getItem('mt_lang') || 'fr',
+    _lang: 'fr',
     get lang() { return this._lang; },
-    set lang(v) { this._lang = v; localStorage.setItem('mt_lang', v); },
+    set lang(v) {
+        this._lang = v;
+        const uid = localStorage.getItem('mt_user_id');
+        if (uid) localStorage.setItem(`mt_${uid}_lang`, v);
+    },
+    loadForUser(uid) {
+        this._lang = (uid && localStorage.getItem(`mt_${uid}_lang`)) || 'fr';
+    },
     t(key) { return translations[this._lang]?.[key] ?? translations.fr[key] ?? key; }
 };
 
@@ -223,6 +238,116 @@ function t(key) { return i18n.t(key); }
 function getMuscleGroups() {
     return translations[i18n.lang].muscles;
 }
+
+// =============================================================
+// THEMES
+// =============================================================
+const themes = {
+    emerald: {
+        name: 'Emerald',
+        accent: '#4ecca3',
+        accentDark: '#3ba882',
+        accentLight: '#6fe8c0',
+        bgPrimary: '#0f0f1a',
+        bgSecondary: '#1a1a2e',
+        bgTertiary: '#16213e',
+        bgCard: '#1a1a2e',
+        border: '#2a2a3e',
+        chartColor: '#4ecca3',
+        chartRgba: '78, 204, 163',
+    },
+    ocean: {
+        name: 'Ocean',
+        accent: '#5b9bf5',
+        accentDark: '#4080d4',
+        accentLight: '#82b5ff',
+        bgPrimary: '#0b1120',
+        bgSecondary: '#131d33',
+        bgTertiary: '#1a2744',
+        bgCard: '#131d33',
+        border: '#243352',
+        chartColor: '#5b9bf5',
+        chartRgba: '91, 155, 245',
+    },
+    sunset: {
+        name: 'Sunset',
+        accent: '#f5a623',
+        accentDark: '#d48e1a',
+        accentLight: '#ffc35c',
+        bgPrimary: '#141010',
+        bgSecondary: '#221a1a',
+        bgTertiary: '#2e2020',
+        bgCard: '#221a1a',
+        border: '#3d2e2e',
+        chartColor: '#f5a623',
+        chartRgba: '245, 166, 35',
+    },
+    lavender: {
+        name: 'Lavender',
+        accent: '#a78bfa',
+        accentDark: '#8b6de0',
+        accentLight: '#c4a8ff',
+        bgPrimary: '#100e1a',
+        bgSecondary: '#1a172e',
+        bgTertiary: '#231f3e',
+        bgCard: '#1a172e',
+        border: '#302a4e',
+        chartColor: '#a78bfa',
+        chartRgba: '167, 139, 250',
+    },
+    cherry: {
+        name: 'Cherry',
+        accent: '#f472b6',
+        accentDark: '#d4569a',
+        accentLight: '#ff9ed0',
+        bgPrimary: '#140c12',
+        bgSecondary: '#221420',
+        bgTertiary: '#2e1a2a',
+        bgCard: '#221420',
+        border: '#3d2838',
+        chartColor: '#f472b6',
+        chartRgba: '244, 114, 182',
+    }
+};
+
+const themeManager = {
+    _theme: 'emerald',
+    get current() { return this._theme; },
+    set current(id) {
+        this._theme = id;
+        const uid = localStorage.getItem('mt_user_id');
+        if (uid) localStorage.setItem(`mt_${uid}_theme`, id);
+        this.apply();
+    },
+    loadForUser(uid) {
+        this._theme = (uid && localStorage.getItem(`mt_${uid}_theme`)) || 'emerald';
+        this.apply();
+    },
+    apply() {
+        const th = themes[this._theme] || themes.emerald;
+        const root = document.documentElement.style;
+        root.setProperty('--accent', th.accent);
+        root.setProperty('--accent-dark', th.accentDark);
+        root.setProperty('--accent-light', th.accentLight);
+        root.setProperty('--success', th.accent);
+        root.setProperty('--success-dark', th.accentDark);
+        root.setProperty('--bg-primary', th.bgPrimary);
+        root.setProperty('--bg-secondary', th.bgSecondary);
+        root.setProperty('--bg-tertiary', th.bgTertiary);
+        root.setProperty('--bg-card', th.bgCard);
+        root.setProperty('--border', th.border);
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', th.bgPrimary);
+    },
+    getChartColor() {
+        const th = themes[this._theme] || themes.emerald;
+        return { hex: th.chartColor, rgba: th.chartRgba };
+    }
+};
+
+// Load user preferences on startup
+const _savedUid = localStorage.getItem('mt_user_id');
+i18n.loadForUser(_savedUid);
+themeManager.loadForUser(_savedUid);
 
 // =============================================================
 // API LAYER
@@ -493,7 +618,7 @@ const App = {
                            style="flex:1" maxlength="64">
                     <button class="btn btn-primary" id="auth-login-btn">${t('login')}</button>
                 </div>
-                <div id="auth-error" style="color:var(--accent);font-size:13px;margin-top:12px;display:none"></div>
+                <div id="auth-error" style="color:var(--danger);font-size:13px;margin-top:12px;display:none"></div>
 
                 <div style="margin-top:20px;text-align:center">
                     <button class="btn btn-secondary btn-sm" id="auth-lang-btn" style="font-size:12px">
@@ -537,6 +662,11 @@ const App = {
     },
 
     onAuthSuccess() {
+        // Load user-specific preferences
+        i18n.loadForUser(currentUserId);
+        themeManager.loadForUser(currentUserId);
+        document.documentElement.lang = i18n.lang === 'zh' ? 'zh' : 'fr';
+
         const tabBar = document.getElementById('tab-bar');
         tabBar.classList.remove('hidden');
         this.checkActiveSession();
@@ -602,9 +732,13 @@ const App = {
         tabBar.classList.remove('hidden');
         main.classList.remove('no-padding', 'session-mode');
 
-        // User ID button in header (when authenticated)
+        // Header buttons (when authenticated)
         if (currentUserId) {
+            const th = themes[themeManager.current] || themes.emerald;
             headerActions.innerHTML = `
+                <button class="header-btn" id="btn-theme" aria-label="${t('theme')}">
+                    <span style="width:20px;height:20px;border-radius:50%;background:${th.accent};display:block;border:2px solid var(--border)"></span>
+                </button>
                 <button class="header-btn" id="btn-user-id" aria-label="${t('user')}" title="${escapeHtml(currentUserId)}">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
@@ -613,6 +747,8 @@ const App = {
                 </button>
             `;
             setTimeout(() => {
+                const btnTheme = document.getElementById('btn-theme');
+                if (btnTheme) btnTheme.addEventListener('click', () => this.showThemePicker());
                 const btn = document.getElementById('btn-user-id');
                 if (btn) btn.addEventListener('click', () => this.showUserInfo());
             }, 0);
@@ -639,7 +775,7 @@ const App = {
 
         switch (this.currentPage) {
             case 'home':
-                headerTitle.textContent = t('appName');
+                headerTitle.textContent = '';
                 renderHome(main);
                 break;
             case 'workout-editor':
@@ -649,7 +785,7 @@ const App = {
                 renderWorkoutEditor(main, this.pageParams);
                 break;
             case 'session':
-                headerTitle.textContent = t('session');
+                headerTitle.textContent = '';
                 tabBar.classList.add('hidden');
                 main.classList.add('session-mode');
                 renderSession(main, this.pageParams);
@@ -658,6 +794,12 @@ const App = {
                 headerTitle.textContent = t('history');
                 renderHistory(main, this.pageParams);
                 break;
+            case 'edit-session':
+                headerTitle.textContent = t('editSession');
+                btnBack.classList.remove('hidden');
+                btnBack.onclick = () => this.goBack();
+                renderEditSession(main, this.pageParams);
+                break;
             case 'progression':
                 headerTitle.textContent = t('progression');
                 btnBack.classList.remove('hidden');
@@ -665,7 +807,7 @@ const App = {
                 renderProgression(main, this.pageParams);
                 break;
             default:
-                headerTitle.textContent = t('appName');
+                headerTitle.textContent = '';
                 renderHome(main);
         }
     },
@@ -689,7 +831,7 @@ const App = {
                 </div>
                 <p style="font-size:11px;color:var(--text-muted);margin-bottom:16px">
                     ${t('noteId')}
-                    ${isOnline ? `<span style="color:var(--success)">${t('online')}</span>` : `<span style="color:var(--accent)">${t('offline')}</span>`}
+                    ${isOnline ? `<span style="color:var(--success)">${t('online')}</span>` : `<span style="color:var(--danger)">${t('offline')}</span>`}
                 </p>
                 <div style="margin-bottom:16px">
                     <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px">${t('language')}</label>
@@ -714,7 +856,40 @@ const App = {
             localStorage.removeItem('mt_user_id');
             currentUserId = null;
             stopAutoSave();
+            // Reset to defaults
+            i18n._lang = 'fr';
+            themeManager._theme = 'emerald';
+            themeManager.apply();
             this.showAuth();
+        });
+        showModal();
+    },
+
+    showThemePicker() {
+        const modalContainer = document.getElementById('modal-container');
+        const themePickerHtml = Object.entries(themes).map(([id, th]) =>
+            `<button class="theme-pick${themeManager.current === id ? ' active' : ''}" data-theme="${id}" style="background:${th.bgSecondary};border:2px solid ${themeManager.current === id ? th.accent : th.border}" title="${th.name}">
+                <span style="background:${th.accent};width:18px;height:18px;border-radius:50%;display:block"></span>
+            </button>`
+        ).join('');
+
+        modalContainer.innerHTML = `
+            <div class="confirm-modal">
+                <h3>${t('theme')}</h3>
+                <div style="display:flex;gap:12px;justify-content:center;margin:20px 0">
+                    ${themePickerHtml}
+                </div>
+                <div class="confirm-modal-actions">
+                    <button class="btn btn-secondary btn-block" onclick="closeModal()">${t('close')}</button>
+                </div>
+            </div>
+        `;
+        document.querySelectorAll('.theme-pick').forEach(btn => {
+            btn.addEventListener('click', () => {
+                themeManager.current = btn.dataset.theme;
+                closeModal();
+                this.render();
+            });
         });
         showModal();
     }
@@ -1099,8 +1274,8 @@ function startSession(workoutId) {
             for (let i = 0; i < numSets; i++) {
                 const lastSet = lastEx?.sets?.[i];
                 sets.push({
-                    weight: lastSet ? lastSet.weight : ex.defaultWeight,
-                    reps: lastSet ? lastSet.reps : 10,
+                    weight: lastSet ? lastSet.weight : (lastSession ? ex.defaultWeight : ''),
+                    reps: lastSet ? lastSet.reps : (lastSession ? 10 : ''),
                     completed: false
                 });
             }
@@ -1142,14 +1317,14 @@ function renderSession(container, params) {
                     <div class="set-row ${set.completed ? 'completed' : ''}">
                         <div class="set-number">${setIdx + 1}</div>
                         <div class="set-fields">
-                            <input type="number" inputmode="decimal" class="inline-input" value="${set.weight}"
+                            <input type="number" inputmode="decimal" class="inline-input" value="${set.weight !== '' ? set.weight : ''}"
                                    onchange="updateSet(${exIdx},${setIdx},'weight',this.value)"
-                                   ${set.completed ? 'readonly' : ''} min="0" step="0.5">
+                                   ${set.completed ? 'readonly' : ''} min="0" step="0.5" placeholder="0">
                             <span>${t('kg')}</span>
                             <span style="color:var(--text-muted);margin:0 2px">x</span>
-                            <input type="number" inputmode="numeric" class="inline-input" value="${set.reps}"
+                            <input type="number" inputmode="numeric" class="inline-input" value="${set.reps !== '' ? set.reps : ''}"
                                    onchange="updateSet(${exIdx},${setIdx},'reps',this.value)"
-                                   ${set.completed ? 'readonly' : ''} min="0" style="width:50px">
+                                   ${set.completed ? 'readonly' : ''} min="0" style="width:50px" placeholder="0">
                             <span>${t('reps')}</span>
                         </div>
                         <button class="set-check" onclick="toggleSet(${exIdx},${setIdx})">
@@ -1180,7 +1355,11 @@ function renderSession(container, params) {
                     </div>
                     ${comparisonHtml}
                     ${setsHtml}
-                    <button class="add-set-btn" onclick="addSet(${exIdx})">${t('addSet')}</button>
+                    <div style="display:flex;align-items:center">
+                        <button class="add-set-btn" onclick="addSet(${exIdx})" style="flex:1">${t('addSet')}</button>
+                        ${ex.sets.length > 1 ? `<button class="add-set-btn" onclick="removeSet(${exIdx})" style="color:var(--danger);flex:0;padding:10px 14px">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </button>` : ''}</div>
                 </div>
             `;
         });
@@ -1228,6 +1407,15 @@ function renderSession(container, params) {
         });
         Store.saveActiveSession(session);
         render();
+    };
+
+    window.removeSet = (exIdx) => {
+        const sets = session.exercises[exIdx].sets;
+        if (sets.length > 1) {
+            sets.pop();
+            Store.saveActiveSession(session);
+            render();
+        }
     };
 
     window.finishSession = () => {
@@ -1349,11 +1537,19 @@ function renderHistory(container, params) {
                         <div class="history-session-date">${formatDate(session.date)}</div>
                         <div style="font-size:12px;color:var(--text-muted)">${formatTime(session.date)}</div>
                     </div>
-                    <button class="history-session-delete" onclick="deleteSessionConfirm('${session.id}', '${selectedWorkoutId}')">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                        </svg>
-                    </button>
+                    <div style="display:flex;gap:8px">
+                        <button class="history-session-delete" onclick="editSessionFromHistory('${session.id}', '${selectedWorkoutId}')" aria-label="${t('editSession')}" style="color:var(--text-secondary)">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            </svg>
+                        </button>
+                        <button class="history-session-delete" onclick="deleteSessionConfirm('${session.id}', '${selectedWorkoutId}')">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
         `;
 
@@ -1438,6 +1634,122 @@ function renderHistory(container, params) {
             }
         );
     };
+
+    window.editSessionFromHistory = (sessionId, workoutId) => {
+        const allSessions = Store.getSessions();
+        const session = allSessions.find(s => s.id === sessionId);
+        if (!session) return;
+        App.pushPage('edit-session', { session: JSON.parse(JSON.stringify(session)), workoutId });
+    };
+}
+
+// =============================================================
+// PAGE: EDIT SESSION
+// =============================================================
+function renderEditSession(container, params) {
+    const session = params.session;
+    if (!session) { App.goBack(); return; }
+
+    function render() {
+        let html = `<div style="margin-bottom:12px">
+            <div style="font-size:16px;font-weight:600;color:var(--text-primary)">${formatDate(session.date)} - ${formatTime(session.date)}</div>
+        </div>`;
+
+        session.exercises.forEach((ex, exIdx) => {
+            let setsHtml = '';
+            ex.sets.forEach((set, setIdx) => {
+                setsHtml += `
+                    <div class="set-row completed">
+                        <div class="set-number">${setIdx + 1}</div>
+                        <div class="set-fields">
+                            <input type="number" inputmode="decimal" class="inline-input" value="${set.weight}"
+                                   onchange="window._editSessionUpdateSet(${exIdx},${setIdx},'weight',this.value)"
+                                   min="0" step="0.5">
+                            <span>${t('kg')}</span>
+                            <span style="color:var(--text-muted);margin:0 2px">x</span>
+                            <input type="number" inputmode="numeric" class="inline-input" value="${set.reps}"
+                                   onchange="window._editSessionUpdateSet(${exIdx},${setIdx},'reps',this.value)"
+                                   min="0" style="width:50px">
+                            <span>${t('reps')}</span>
+                        </div>
+                        <button class="set-check" onclick="window._editSessionRemoveSet(${exIdx},${setIdx})" style="background:var(--bg-tertiary)">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                            </svg>
+                        </button>
+                    </div>
+                `;
+            });
+
+            html += `
+                <div class="session-exercise">
+                    <div class="session-exercise-header">
+                        <span>${escapeHtml(ex.name)}</span>
+                        <span class="session-exercise-muscle">${escapeHtml(ex.muscle)}</span>
+                    </div>
+                    ${setsHtml}
+                    <button class="add-set-btn" onclick="window._editSessionAddSet(${exIdx})">${t('addSet')}</button>
+                </div>
+            `;
+        });
+
+        html += `
+            <button class="btn btn-primary btn-block mt-16" onclick="window._editSessionSave()">${t('save')}</button>
+        `;
+
+        container.innerHTML = html;
+    }
+
+    window._editSessionUpdateSet = (exIdx, setIdx, field, value) => {
+        if (field === 'weight') {
+            session.exercises[exIdx].sets[setIdx].weight = parseFloat(value) || 0;
+        } else {
+            session.exercises[exIdx].sets[setIdx].reps = parseInt(value) || 0;
+        }
+    };
+
+    window._editSessionRemoveSet = (exIdx, setIdx) => {
+        session.exercises[exIdx].sets.splice(setIdx, 1);
+        // Remove exercise if no sets left
+        if (session.exercises[exIdx].sets.length === 0) {
+            session.exercises.splice(exIdx, 1);
+        }
+        render();
+    };
+
+    window._editSessionAddSet = (exIdx) => {
+        const sets = session.exercises[exIdx].sets;
+        const last = sets[sets.length - 1];
+        sets.push({
+            weight: last ? last.weight : 20,
+            reps: last ? last.reps : 10,
+            completed: true
+        });
+        render();
+    };
+
+    window._editSessionSave = () => {
+        // Remove exercises with no sets
+        session.exercises = session.exercises.filter(ex => ex.sets.length > 0);
+        if (session.exercises.length === 0) {
+            // If all exercises removed, delete the session
+            Store.deleteSession(session.id);
+            showToast(t('sessionDeleted'));
+            App.goBack();
+            return;
+        }
+        // Update session in store
+        const sessions = Store.getSessions();
+        const idx = sessions.findIndex(s => s.id === session.id);
+        if (idx !== -1) {
+            sessions[idx] = session;
+            Store.saveSessions(sessions);
+        }
+        showToast(t('editSessionSaved'));
+        App.goBack();
+    };
+
+    render();
 }
 
 // =============================================================
@@ -1494,7 +1806,7 @@ function renderProgression(container, params) {
         const lastWeight = dataPoints[dataPoints.length - 1].maxWeight;
         const diff = lastWeight - firstWeight;
         const diffStr = diff >= 0 ? `+${diff}` : `${diff}`;
-        const diffColor = diff >= 0 ? 'var(--success)' : 'var(--accent)';
+        const diffColor = diff >= 0 ? 'var(--success)' : 'var(--danger)';
 
         html += `
             <div class="progression-section">
@@ -1592,7 +1904,8 @@ function drawChart(canvasId, dataPoints) {
         if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
     });
-    ctx.strokeStyle = '#e94560';
+    const cc = themeManager.getChartColor();
+    ctx.strokeStyle = cc.hex;
     ctx.lineWidth = 2.5;
     ctx.lineJoin = 'round';
     ctx.stroke();
@@ -1603,8 +1916,8 @@ function drawChart(canvasId, dataPoints) {
     ctx.lineTo(padding.left, padding.top + chartH);
     ctx.closePath();
     const gradient = ctx.createLinearGradient(0, padding.top, 0, padding.top + chartH);
-    gradient.addColorStop(0, 'rgba(233, 69, 96, 0.3)');
-    gradient.addColorStop(1, 'rgba(233, 69, 96, 0.02)');
+    gradient.addColorStop(0, `rgba(${cc.rgba}, 0.3)`);
+    gradient.addColorStop(1, `rgba(${cc.rgba}, 0.02)`);
     ctx.fillStyle = gradient;
     ctx.fill();
 
@@ -1614,7 +1927,7 @@ function drawChart(canvasId, dataPoints) {
         const y = padding.top + chartH - ((d.maxWeight - minW) / range) * chartH;
         ctx.beginPath();
         ctx.arc(x, y, 4, 0, Math.PI * 2);
-        ctx.fillStyle = '#e94560';
+        ctx.fillStyle = cc.hex;
         ctx.fill();
         ctx.beginPath();
         ctx.arc(x, y, 2, 0, Math.PI * 2);
