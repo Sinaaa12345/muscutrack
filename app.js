@@ -94,6 +94,16 @@ const translations = {
         editSession: 'Modifier la séance',
         editSessionSaved: 'Séance modifiée',
         seriesCount: (n) => `${n} série${n > 1 ? 's' : ''}`,
+        // Notes
+        addNote: 'Ajouter une note',
+        editNote: 'Modifier la note',
+        notePlaceholder: 'Écrivez une note sur cette séance...',
+        noteSaved: 'Note enregistrée',
+        note: 'Note',
+        // Drop set
+        dropSet: 'Drop set',
+        dropSetWeights: 'Charges (kg)',
+        addDropWeight: '+ Charge',
         // Progression
         notEnoughData: 'Pas assez de données',
         doAtLeast2Sessions: 'Effectuez au moins 2 séances pour voir la progression.',
@@ -198,6 +208,16 @@ const translations = {
         editSession: '编辑训练记录',
         editSessionSaved: '训练记录已修改',
         seriesCount: (n) => `${n} 组`,
+        // Notes
+        addNote: '添加备注',
+        editNote: '修改备注',
+        notePlaceholder: '写下关于这次训练的备注...',
+        noteSaved: '备注已保存',
+        note: '备注',
+        // Drop set
+        dropSet: '递减组',
+        dropSetWeights: '重量 (公斤)',
+        addDropWeight: '+ 重量',
         // Progression
         notEnoughData: '数据不足',
         doAtLeast2Sessions: '至少完成2次训练才能查看进度。',
@@ -732,8 +752,8 @@ const App = {
         if (currentUserId) {
             const th = themes[themeManager.current] || themes.emerald;
             headerActions.innerHTML = `
-                <button class="header-btn" id="btn-theme" aria-label="${t('theme')}">
-                    <span style="width:20px;height:20px;border-radius:50%;background:${th.accent};display:block;border:2px solid var(--border)"></span>
+                <button class="header-btn header-theme-btn" id="btn-theme" aria-label="${t('theme')}">
+                    <span class="theme-dot" style="background:${th.accent}"></span>
                 </button>
                 <button class="header-btn" id="btn-user-id" aria-label="${t('user')}" title="${escapeHtml(currentUserId)}">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -742,12 +762,8 @@ const App = {
                     </svg>
                 </button>
             `;
-            setTimeout(() => {
-                const btnTheme = document.getElementById('btn-theme');
-                if (btnTheme) btnTheme.addEventListener('click', () => this.showThemePicker());
-                const btn = document.getElementById('btn-user-id');
-                if (btn) btn.addEventListener('click', () => this.showUserInfo());
-            }, 0);
+            document.getElementById('btn-theme').addEventListener('click', () => this.showThemePicker());
+            document.getElementById('btn-user-id').addEventListener('click', () => this.showUserInfo());
         }
 
         // Update tab labels
@@ -944,13 +960,11 @@ function renderHome(container) {
         `;
     });
 
-    if (workouts.length < 3) {
-        html += `
-            <button class="btn btn-secondary btn-block mt-16" onclick="App.pushPage('workout-editor')">
-                ${t('newProgramBtn')}
-            </button>
-        `;
-    }
+    html += `
+        <button class="btn btn-secondary btn-block mt-16" onclick="App.pushPage('workout-editor')">
+            ${t('newProgramBtn')}
+        </button>
+    `;
 
     container.innerHTML = html;
 }
@@ -989,12 +1003,30 @@ function renderWorkoutEditor(container, params) {
 
     const state = {
         name: existing ? existing.name : '',
-        exercises: existing ? [...existing.exercises.map(e => ({ ...e }))] : []
+        exercises: existing ? [...existing.exercises.map(e => ({ ...e, dropSet: e.dropSet || false, dropWeights: e.dropWeights ? [...e.dropWeights] : [] }))] : []
     };
 
     function render() {
         let exercisesHtml = '';
         state.exercises.forEach((ex, i) => {
+            // Drop set weights UI
+            let dropWeightsHtml = '';
+            if (ex.dropSet && ex.dropWeights && ex.dropWeights.length > 0) {
+                dropWeightsHtml = `<div class="editor-drop-weights">
+                    <label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:6px">${t('dropSetWeights')}</label>
+                    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+                        ${ex.dropWeights.map((w, wi) => `
+                            <div style="display:flex;align-items:center;gap:4px">
+                                <input type="number" inputmode="decimal" class="inline-input" value="${w}" style="width:55px"
+                                       onchange="window._editorUpdateDropWeight(${i},${wi},this.value)" min="0" step="0.5">
+                                ${ex.dropWeights.length > 1 ? `<button onclick="window._editorRemoveDropWeight(${i},${wi})" style="color:var(--danger);padding:2px;font-size:16px;line-height:1">&times;</button>` : ''}
+                            </div>
+                        `).join('<span style="color:var(--text-muted);font-size:12px">&rarr;</span>')}
+                        <button class="btn btn-secondary btn-sm" onclick="window._editorAddDropWeight(${i})" style="padding:4px 10px;min-height:30px;font-size:12px">${t('addDropWeight')}</button>
+                    </div>
+                </div>`;
+            }
+
             exercisesHtml += `
                 <div class="editor-exercise">
                     <div class="editor-exercise-header">
@@ -1020,7 +1052,12 @@ function renderWorkoutEditor(container, params) {
                             <input type="number" inputmode="numeric" class="inline-input" value="${ex.defaultSets}"
                                    onchange="window._editorUpdateSets(${i}, this.value)" min="1" max="20" style="width:50px">
                         </div>
+                        <label class="drop-set-toggle">
+                            <input type="checkbox" ${ex.dropSet ? 'checked' : ''} onchange="window._editorToggleDropSet(${i}, this.checked)">
+                            <span>${t('dropSet')}</span>
+                        </label>
                     </div>
+                    ${dropWeightsHtml}
                 </div>
             `;
         });
@@ -1074,6 +1111,31 @@ function renderWorkoutEditor(container, params) {
     window._editorUpdateSets = (index, value) => {
         state.exercises[index].defaultSets = Math.max(1, parseInt(value) || 1);
     };
+    window._editorToggleDropSet = (index, checked) => {
+        state.exercises[index].dropSet = checked;
+        if (checked && (!state.exercises[index].dropWeights || state.exercises[index].dropWeights.length === 0)) {
+            const baseWeight = state.exercises[index].defaultWeight || 20;
+            state.exercises[index].dropWeights = [baseWeight, Math.round(baseWeight * 0.8 * 2) / 2];
+        }
+        if (!checked) {
+            state.exercises[index].dropWeights = [];
+        }
+        render();
+    };
+    window._editorUpdateDropWeight = (exIdx, weightIdx, value) => {
+        state.exercises[exIdx].dropWeights[weightIdx] = parseFloat(value) || 0;
+    };
+    window._editorRemoveDropWeight = (exIdx, weightIdx) => {
+        state.exercises[exIdx].dropWeights.splice(weightIdx, 1);
+        render();
+    };
+    window._editorAddDropWeight = (exIdx) => {
+        const weights = state.exercises[exIdx].dropWeights;
+        const last = weights[weights.length - 1] || 10;
+        weights.push(Math.round(last * 0.8 * 2) / 2);
+        render();
+    };
+
     window._editorAddExercise = () => {
         const nameInput = document.getElementById('new-exercise-name');
         const muscleSelect = document.getElementById('new-exercise-muscle');
@@ -1126,10 +1188,6 @@ function saveWorkout() {
             workouts[idx].exercises = state.exercises;
         }
     } else {
-        if (workouts.length >= 3) {
-            showToast(t('maxProgramsReached'));
-            return;
-        }
         workouts.push({
             id: generateId(),
             name,
@@ -1263,15 +1321,28 @@ function startSession(workoutId) {
             const lastEx = lastSession?.exercises?.find(e => e.name === ex.name);
             const sets = [];
             const numSets = ex.defaultSets || 4;
-            for (let i = 0; i < numSets; i++) {
-                const lastSet = lastEx?.sets?.[i];
-                sets.push({
-                    weight: lastSet ? lastSet.weight : (lastSession ? ex.defaultWeight : ''),
-                    reps: lastSet ? lastSet.reps : (lastSession ? 10 : ''),
-                    completed: false
+
+            if (ex.dropSet && ex.dropWeights && ex.dropWeights.length > 0) {
+                // Drop set mode: one set per drop weight
+                ex.dropWeights.forEach((dw, dwi) => {
+                    const lastSet = lastEx?.sets?.[dwi];
+                    sets.push({
+                        weight: lastSet ? lastSet.weight : dw,
+                        reps: lastSet ? lastSet.reps : (lastSession ? 10 : ''),
+                        completed: false
+                    });
                 });
+            } else {
+                for (let i = 0; i < numSets; i++) {
+                    const lastSet = lastEx?.sets?.[i];
+                    sets.push({
+                        weight: lastSet ? lastSet.weight : (lastSession ? ex.defaultWeight : ''),
+                        reps: lastSet ? lastSet.reps : (lastSession ? 10 : ''),
+                        completed: false
+                    });
+                }
             }
-            return { name: ex.name, muscle: ex.muscle, sets };
+            return { name: ex.name, muscle: ex.muscle, sets, dropSet: ex.dropSet || false };
         })
     };
 
@@ -1336,10 +1407,12 @@ function renderSession(container, params) {
                 }
             }
 
+            const dropBadge = ex.dropSet ? `<span class="drop-set-badge">${t('dropSet')}</span>` : '';
+
             html += `
                 <div class="session-exercise ${perfClass}">
                     <div class="session-exercise-header">
-                        <span>${escapeHtml(ex.name)}</span>
+                        <span>${escapeHtml(ex.name)} ${dropBadge}</span>
                         <div style="display:flex;align-items:center;gap:8px">
                             ${perfIndicatorHtml}
                             <span class="session-exercise-muscle">${escapeHtml(ex.muscle)}</span>
@@ -1522,6 +1595,7 @@ function renderHistory(container, params) {
     const session = sessions[selectedSessionIdx];
     let detailHtml = '';
     if (session) {
+        const noteText = session.note || '';
         detailHtml += `
             <div class="history-session-card">
                 <div class="history-session-header">
@@ -1530,6 +1604,11 @@ function renderHistory(container, params) {
                         <div style="font-size:12px;color:var(--text-muted)">${formatTime(session.date)}</div>
                     </div>
                     <div style="display:flex;gap:8px">
+                        <button class="history-session-delete" onclick="showNoteModal('${session.id}', '${selectedWorkoutId}')" aria-label="${t('note')}" style="color:${noteText ? 'var(--accent)' : 'var(--text-muted)'}">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+                            </svg>
+                        </button>
                         <button class="history-session-delete" onclick="editSessionFromHistory('${session.id}', '${selectedWorkoutId}')" aria-label="${t('editSession')}" style="color:var(--text-secondary)">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
@@ -1543,6 +1622,7 @@ function renderHistory(container, params) {
                         </button>
                     </div>
                 </div>
+                ${noteText ? `<div class="session-note-display"><span class="session-note-label">${t('note')}:</span> ${escapeHtml(noteText)}</div>` : ''}
         `;
 
         // Find the previous session (the one right after in the sorted array)
@@ -1589,7 +1669,7 @@ function renderHistory(container, params) {
                     </div>
                     <div class="history-exercise-detail">
                         <span class="history-exercise-weight">${maxWeight} ${t('kg')}</span>
-                        <div style="font-size:11px;color:var(--text-muted)">${t('seriesCount')(ex.sets.length)}</div>
+                        <div style="font-size:11px;color:var(--text-muted)">${ex.sets.map(s => s.reps).join('-')}</div>
                     </div>
                 </div>
             `;
@@ -1632,6 +1712,37 @@ function renderHistory(container, params) {
         const session = allSessions.find(s => s.id === sessionId);
         if (!session) return;
         App.pushPage('edit-session', { session: JSON.parse(JSON.stringify(session)), workoutId });
+    };
+
+    window.showNoteModal = (sessionId, workoutId) => {
+        const allSessions = Store.getSessions();
+        const session = allSessions.find(s => s.id === sessionId);
+        if (!session) return;
+        const currentNote = session.note || '';
+        const modalContainer = document.getElementById('modal-container');
+        modalContainer.innerHTML = `
+            <div class="confirm-modal">
+                <h3>${currentNote ? t('editNote') : t('addNote')}</h3>
+                <textarea class="form-input" id="note-input" rows="4" placeholder="${t('notePlaceholder')}" style="resize:vertical;min-height:80px;margin-bottom:16px">${escapeHtml(currentNote)}</textarea>
+                <div class="confirm-modal-actions">
+                    <button class="btn btn-secondary" onclick="closeModal()">${t('cancel')}</button>
+                    <button class="btn btn-primary" id="btn-save-note">${t('save')}</button>
+                </div>
+            </div>
+        `;
+        document.getElementById('btn-save-note').addEventListener('click', () => {
+            const noteValue = document.getElementById('note-input').value.trim();
+            const sessions = Store.getSessions();
+            const idx = sessions.findIndex(s => s.id === sessionId);
+            if (idx !== -1) {
+                sessions[idx].note = noteValue;
+                Store.saveSessions(sessions);
+            }
+            closeModal();
+            showToast(t('noteSaved'));
+            App.navigate('history', { selectedWorkoutId: workoutId, selectedSessionIdx: selectedSessionIdx });
+        });
+        showModal();
     };
 }
 

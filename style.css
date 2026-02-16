@@ -568,6 +568,44 @@ select.form-input option {
 }
 
 /* ============================================
+   DROP SET
+   ============================================ */
+.drop-set-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    margin-left: auto;
+    padding-left: 8px;
+}
+
+.drop-set-toggle input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+
+.drop-set-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 8px;
+    background: rgba(78, 204, 163, 0.15);
+    color: var(--accent);
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
+.editor-drop-weights {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border);
+}
+
+/* ============================================
    SESSION TRACKING
    ============================================ */
 .session-exercise {
@@ -933,6 +971,21 @@ select.form-input option {
     color: var(--danger-light);
 }
 
+/* Session note display */
+.session-note-display {
+    padding: 8px 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border);
+    line-height: 1.4;
+}
+
+.session-note-label {
+    font-weight: 600;
+    color: var(--accent);
+}
+
 /* ============================================
    PROGRESSION
    ============================================ */
@@ -1118,6 +1171,20 @@ select.form-input option {
 /* ============================================
    THEME PICKER
    ============================================ */
+/* Theme dot in header */
+.header-theme-btn {
+    position: relative;
+}
+
+.theme-dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: block;
+    border: 2px solid var(--border);
+    pointer-events: none;
+}
+
 .theme-pick {
     width: 44px;
     height: 44px;

@@ -157,8 +157,8 @@ app.get('/api/workouts', requireRedis, authMiddleware, async (req, res) => {
 app.post('/api/workouts', requireRedis, authMiddleware, async (req, res) => {
     try {
         const workouts = req.body;
-        if (!Array.isArray(workouts) || workouts.length > 3) {
-            return res.status(400).json({ error: 'Données invalides (max 3 workouts)' });
+        if (!Array.isArray(workouts) || workouts.length > 10) {
+            return res.status(400).json({ error: 'Données invalides (max 10 workouts)' });
         }
         // Validate each workout
         for (const w of workouts) {
