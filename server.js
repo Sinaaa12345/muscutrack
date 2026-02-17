@@ -32,7 +32,7 @@ redis.on('connect', async () => {
     console.log('Redis connected');
     // Register default users
     try {
-        await redis.sadd('mt:users', 'BASILE', 'ROSLYN', 'CHAHINE');
+        await redis.sadd('mt:users', 'BASILE', 'ROSLYN', 'CHAHINE', 'JULIEN');
     } catch (err) {
         console.error('Failed to register default users:', err.message);
     }
