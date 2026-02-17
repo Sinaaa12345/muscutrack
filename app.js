@@ -27,6 +27,7 @@ const translations = {
         login: 'Connexion',
         loginSuccess: 'Connexion réussie',
         loginError: 'Erreur de connexion',
+        userNotFound: 'Identifiant inconnu',
         // User info
         user: 'Utilisateur',
         yourId: 'Votre ID :',
@@ -141,6 +142,7 @@ const translations = {
         login: '登录',
         loginSuccess: '登录成功',
         loginError: '登录失败',
+        userNotFound: '用户名不存在',
         // User info
         user: '用户',
         yourId: '您的ID：',
@@ -475,11 +477,11 @@ const Store = {
     addSession(session) {
         const sessions = this.getSessions();
         sessions.unshift(session);
-        // Keep only 20 per workout
+        // Keep only 50 per workout
         const counts = {};
         const filtered = sessions.filter(s => {
             counts[s.workoutId] = (counts[s.workoutId] || 0) + 1;
-            return counts[s.workoutId] <= 20;
+            return counts[s.workoutId] <= 50;
         });
         this.saveSessions(filtered);
         if (currentUserId) {
@@ -646,6 +648,7 @@ const App = {
 
         document.getElementById('auth-login-btn').addEventListener('click', async () => {
             const input = document.getElementById('auth-id-input');
+            const errorDiv = document.getElementById('auth-error');
             const id = input.value.trim();
             if (!id) {
                 input.focus();
@@ -653,17 +656,17 @@ const App = {
             }
             const btn = document.getElementById('auth-login-btn');
             btn.disabled = true;
+            errorDiv.style.display = 'none';
             try {
                 await initAuth(id);
                 await syncFromServer();
+                showToast(t('loginSuccess'));
+                this.onAuthSuccess();
             } catch {
-                // Server unavailable or user not found - continue in offline/localStorage mode
-                currentUserId = id;
-                localStorage.setItem('mt_user_id', id);
-                isOnline = false;
+                btn.disabled = false;
+                errorDiv.textContent = t('userNotFound');
+                errorDiv.style.display = 'block';
             }
-            showToast(t('loginSuccess'));
-            this.onAuthSuccess();
         });
 
         document.getElementById('auth-id-input').addEventListener('keydown', (e) => {
@@ -1257,19 +1260,15 @@ function renderComparisonHtml(comparison) {
 
     // Previous session row
     const p = comparison.prev;
-    const prevSetsStr = p.sets.map(s => `${s.weight}x${s.reps}`).join(' / ');
+    const prevRepsStr = p.sets.map(s => s.reps).join('-');
     let prevRowHtml = `
-        <div class="perf-row">
-            <span class="perf-row-label">${t('prev')}</span>
-            <div class="perf-row-values">
-                <span>${p.maxWeight} ${t('kg')}</span>
-                <span style="color:var(--text-muted)">|</span>
-                <span>${p.totalReps} ${t('reps')}</span>
-                <span style="color:var(--text-muted)">|</span>
-                <span>${p.sets.length} ${t('setsShort')}</span>
+        <div class="perf-prev-summary">
+            <span class="perf-prev-label">${t('prev')}</span>
+            <div class="perf-prev-values">
+                <span class="perf-prev-weight">${p.maxWeight} ${t('kg')}</span>
+                <span class="perf-prev-reps">${prevRepsStr}</span>
             </div>
         </div>
-        <div style="font-size:10px;color:var(--text-muted);margin-top:2px">${prevSetsStr}</div>
     `;
 
     // Current indicator
@@ -1328,7 +1327,7 @@ function startSession(workoutId) {
                     const lastSet = lastEx?.sets?.[dwi];
                     sets.push({
                         weight: lastSet ? lastSet.weight : dw,
-                        reps: lastSet ? lastSet.reps : (lastSession ? 10 : ''),
+                        reps: '',
                         completed: false
                     });
                 });
@@ -1337,7 +1336,7 @@ function startSession(workoutId) {
                     const lastSet = lastEx?.sets?.[i];
                     sets.push({
                         weight: lastSet ? lastSet.weight : (lastSession ? ex.defaultWeight : ''),
-                        reps: lastSet ? lastSet.reps : (lastSession ? 10 : ''),
+                        reps: '',
                         completed: false
                     });
                 }
@@ -1669,7 +1668,7 @@ function renderHistory(container, params) {
                     </div>
                     <div class="history-exercise-detail">
                         <span class="history-exercise-weight">${maxWeight} ${t('kg')}</span>
-                        <div style="font-size:11px;color:var(--text-muted)">${ex.sets.map(s => s.reps).join('-')}</div>
+                        <span class="history-exercise-weight">${ex.sets.map(s => s.reps).join('-')}</span>
                     </div>
                 </div>
             `;

@@ -652,12 +652,12 @@ select.form-input option {
 
 /* Performance comparison bar */
 .perf-comparison {
-    padding: 8px 16px;
+    padding: 10px 16px;
     background: rgba(15, 15, 26, 0.4);
     border-bottom: 1px solid var(--border);
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
 }
 
 .perf-comparison-title {
@@ -667,6 +667,37 @@ select.form-input option {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 2px;
+}
+
+.perf-prev-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.perf-prev-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.perf-prev-values {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.perf-prev-weight {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+.perf-prev-reps {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
 }
 
 .perf-row {
@@ -933,12 +964,17 @@ select.form-input option {
 }
 
 .history-exercise-detail {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
     font-size: 13px;
     color: var(--text-secondary);
     text-align: right;
 }
 
 .history-exercise-weight {
+    display: block;
     font-weight: 600;
     color: var(--accent);
 }
