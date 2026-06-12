@@ -393,6 +393,14 @@ async function apiCall(method, path, body) {
     return res.json();
 }
 
+// Bounds a save/delete call so a slow or hanging connection can't block the UI forever.
+function withTimeout(promise, ms = 5000) {
+    return Promise.race([
+        promise,
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), ms))
+    ]);
+}
+
 async function syncFromServer() {
     if (!currentUserId) return false;
     try {
@@ -401,10 +409,36 @@ async function syncFromServer() {
             apiCall('GET', '/api/sessions'),
             apiCall('GET', '/api/sessions/active')
         ]);
+
+        // A session finished just before a reload may not have reached the
+        // server yet (request aborted by the reload, or it failed silently).
+        // Re-push any local sessions the server doesn't know about yet,
+        // instead of letting its response wipe them out.
+        const localSessions = Store.getSessions();
+        const serverIds = new Set(sessions.map(s => s.id));
+        const unsynced = localSessions.filter(s => !serverIds.has(s.id));
+        for (const session of unsynced) {
+            try {
+                await withTimeout(apiCall('POST', '/api/sessions', session));
+            } catch {
+                // will retry on next sync
+            }
+        }
+        sessions.unshift(...unsynced);
+
+        // If the server's "active session" matches one we already saved as
+        // completed, it's a leftover from a cleanup that didn't reach the
+        // server - discard it instead of resurrecting a finished session.
+        let finalActiveSession = activeSession;
+        if (activeSession && sessions.some(s => s.id === activeSession.id)) {
+            finalActiveSession = null;
+            apiCall('DELETE', '/api/sessions/active').catch(() => {});
+        }
+
         localStorage.setItem('mt_workouts', JSON.stringify(workouts));
         localStorage.setItem('mt_sessions', JSON.stringify(sessions));
-        if (activeSession) {
-            localStorage.setItem('mt_active_session', JSON.stringify(activeSession));
+        if (finalActiveSession) {
+            localStorage.setItem('mt_active_session', JSON.stringify(finalActiveSession));
         } else {
             localStorage.removeItem('mt_active_session');
         }
@@ -446,10 +480,12 @@ const Store = {
     getWorkouts() {
         return this._get('mt_workouts') || [];
     },
-    saveWorkouts(workouts) {
+    async saveWorkouts(workouts) {
         this._set('mt_workouts', workouts);
         if (currentUserId) {
-            apiCall('POST', '/api/workouts', workouts).catch(() => {});
+            try {
+                await withTimeout(apiCall('POST', '/api/workouts', workouts));
+            } catch {}
         }
     },
 
@@ -467,14 +503,16 @@ const Store = {
         this._set('mt_active_session', session);
         // API sync is handled by auto-save interval, not every keystroke
     },
-    clearActiveSession() {
+    async clearActiveSession() {
         localStorage.removeItem('mt_active_session');
         if (currentUserId) {
-            apiCall('DELETE', '/api/sessions/active').catch(() => {});
+            try {
+                await withTimeout(apiCall('DELETE', '/api/sessions/active'));
+            } catch {}
         }
     },
 
-    addSession(session) {
+    async addSession(session) {
         const sessions = this.getSessions();
         sessions.unshift(session);
         // Keep only 50 per workout
@@ -485,7 +523,9 @@ const Store = {
         });
         this.saveSessions(filtered);
         if (currentUserId) {
-            apiCall('POST', '/api/sessions', session).catch(() => {});
+            try {
+                await withTimeout(apiCall('POST', '/api/sessions', session));
+            } catch {}
         }
     },
 
@@ -1437,7 +1477,7 @@ function renderSession(container, params) {
                     <span style="font-size:13px;color:var(--text-secondary)">${t('setsProgress')(completedSets, totalSets)}</span>
                     <button class="btn btn-danger btn-sm" onclick="cancelSession()">${t('cancel')}</button>
                 </div>
-                <button class="btn btn-success btn-block" onclick="finishSession()">${t('finishSession')}</button>
+                <button class="btn btn-success btn-block" onclick="finishSession(this)">${t('finishSession')}</button>
             </div>
         `;
 
@@ -1482,12 +1522,14 @@ function renderSession(container, params) {
         }
     };
 
-    window.finishSession = () => {
+    window.finishSession = async (btn) => {
         const completedSets = session.exercises.reduce((acc, ex) => acc + ex.sets.filter(s => s.completed).length, 0);
         if (completedSets === 0) {
             showToast(t('validateAtLeastOneSet'));
             return;
         }
+
+        if (btn) btn.disabled = true;
 
         // Only keep completed sets in saved session
         const savedSession = {
@@ -1498,8 +1540,8 @@ function renderSession(container, params) {
             })).filter(ex => ex.sets.length > 0)
         };
 
-        Store.addSession(savedSession);
-        Store.clearActiveSession();
+        await Store.addSession(savedSession);
+        await Store.clearActiveSession();
         stopAutoSave();
 
         // Auto-update workout template with values from this session
@@ -1520,7 +1562,7 @@ function renderSession(container, params) {
                     templateEx.defaultSets = completed.length;
                 }
             });
-            Store.saveWorkouts(workouts);
+            await Store.saveWorkouts(workouts);
         }
 
         showToast(t('sessionSaved'));
